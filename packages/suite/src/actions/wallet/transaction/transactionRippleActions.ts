@@ -1,6 +1,10 @@
 import TrezorConnect, { FeeLevel, RipplePayment } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
-import { ComposeTransactionData, SignTransactionData } from '@wallet-types/transaction';
+import {
+    ComposeTransactionData,
+    ReviewTransactionData,
+    SignTransactionData,
+} from '@wallet-types/transaction';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { calculateTotal, calculateMax } from '@wallet-utils/sendFormUtils';
 import { getExternalComposeOutput } from '@wallet-utils/exchangeFormUtils';
@@ -8,6 +12,8 @@ import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accou
 import { XRP_FLAG } from '@wallet-constants/sendForm';
 import { PrecomposedLevels, PrecomposedTransaction, ExternalOutput } from '@wallet-types/sendForm';
 import { Dispatch, GetState } from '@suite-types';
+import { outputsWithFinalAddress } from './transactionBitcoinActions';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
 
 const calculate = (
     availableBalance: string,
@@ -135,14 +141,37 @@ export const signTransaction = (data: SignTransactionData) => async (
     const { account } = selectedAccount;
     if (account.networkType !== 'ripple') return;
 
+    const updatedOutputs = outputsWithFinalAddress(
+        data.address,
+        data.transactionInfo.transaction.outputs,
+    );
+    if (!updatedOutputs) {
+        dispatch(
+            notificationActions.addToast({
+                type: 'sign-tx-error',
+                error: 'Invalid transaction outputs',
+            }),
+        );
+        return;
+    }
+
     const payment: RipplePayment = {
         destination: data.address,
         amount: networkAmountToSatoshi(data.amount, account.symbol),
     };
 
-    if (data.rippleDestinationTag) {
-        payment.destinationTag = parseInt(data.rippleDestinationTag, 10);
+    if (data.destinationTag) {
+        payment.destinationTag = parseInt(data.destinationTag, 10);
     }
+
+    const reviewData: ReviewTransactionData = {
+        signedTx: undefined,
+        transactionInfo: {
+            ...data.transactionInfo,
+            transaction: { ...data.transactionInfo.transaction, outputs: updatedOutputs },
+        },
+    };
+    await dispatch(coinmarketCommonActions.saveTransactionReview(reviewData));
 
     const signedTx = await TrezorConnect.rippleSignTransaction({
         device: {
@@ -171,5 +200,11 @@ export const signTransaction = (data: SignTransactionData) => async (
         return;
     }
 
-    return signedTx.payload.serializedTx;
+    return {
+        ...reviewData,
+        signedTx: {
+            tx: signedTx.payload.serializedTx,
+            coin: account.symbol,
+        },
+    };
 };

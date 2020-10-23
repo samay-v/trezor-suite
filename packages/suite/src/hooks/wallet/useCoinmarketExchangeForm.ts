@@ -62,13 +62,15 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         saveQuotes,
         saveTrade,
         composeTransaction,
-        saveTransactionInfo,
+        saveComposedTransaction,
+        // signTransaction,
     } = useActions({
         saveQuoteRequest: coinmarketExchangeActions.saveQuoteRequest,
         saveQuotes: coinmarketExchangeActions.saveQuotes,
         saveTrade: coinmarketExchangeActions.saveTrade,
         composeTransaction: transactionActions.composeTransaction,
-        saveTransactionInfo: coinmarketCommonActions.saveTransactionInfo,
+        saveComposedTransaction: coinmarketCommonActions.saveComposedTransaction,
+        // signTransaction: coinmarketExchangeActions.signTransaction,
     });
 
     const { goto } = useActions({ goto: routerActions.goto });
@@ -102,7 +104,6 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
             //         transactionInfo,
             //         network,
             //         amount: transactionInfo.totalSpent,
-            //         modalName: 'coinmarket-exchange-form',
             //     });
 
             //     return;
@@ -201,8 +202,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
                 setValue('buyCryptoInput', amountToFill, { shouldValidate: true });
                 updateFiatValue(amountToFill);
             }
-
-            saveTransactionInfo(transactionInfo);
+            saveComposedTransaction(transactionInfo);
         }
 
         if (transactionInfo?.type === 'error') {

@@ -1,7 +1,8 @@
 import produce from 'immer';
 import { WalletAction, Account } from '@wallet-types';
-import { SignedTx } from '@wallet-types/transaction';
+import { ReviewTransactionData } from '@wallet-types/transaction';
 import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
+
 import {
     BuyTrade,
     BuyTradeQuoteRequest,
@@ -60,8 +61,8 @@ interface State {
     buy: Buy;
     exchange: Exchange;
     transaction: {
-        signedTx: SignedTx | undefined;
-        transactionInfo: PrecomposedTransactionFinal | undefined;
+        composed?: PrecomposedTransactionFinal;
+        reviewData?: ReviewTransactionData;
     };
     trades: Trade[];
 }
@@ -91,10 +92,7 @@ export const initialState = {
         floatQuotes: [],
         addressVerified: undefined,
     },
-    transaction: {
-        signedTx: undefined,
-        transactionInfo: undefined,
-    },
+    transaction: {},
     trades: [],
 };
 
@@ -134,6 +132,7 @@ const coinmarketReducer = (
             case COINMARKET_BUY.DISPOSE:
                 draft.buy.addressVerified = undefined;
                 break;
+            case COINMARKET_EXCHANGE.SAVE_TRADE:
             case COINMARKET_BUY.SAVE_TRADE:
                 if (action.key) {
                     const trades = state.trades.filter(t => t.key !== action.key);
@@ -161,11 +160,11 @@ const coinmarketReducer = (
             case COINMARKET_EXCHANGE.SAVE_TRANSACTION_ID:
                 draft.exchange.transactionId = action.transactionId;
                 break;
-            case COINMARKET_COMMON.SAVE_TRANSACTION_INFO:
-                draft.transaction.transactionInfo = action.transactionInfo;
+            case COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION:
+                draft.transaction.composed = action.composedTransaction;
                 break;
-            case COINMARKET_COMMON.SAVE_SIGNED_TX:
-                draft.transaction.signedTx = action.signedTx;
+            case COINMARKET_COMMON.SAVE_TRANSACTION_REVIEW:
+                draft.transaction.reviewData = action.reviewData;
                 break;
             case STORAGE.LOADED:
                 return action.payload.wallet.coinmarket;

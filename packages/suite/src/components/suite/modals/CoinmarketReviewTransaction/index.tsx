@@ -57,13 +57,17 @@ const getState = (index: number, buttonRequests: number) => {
     return undefined;
 };
 
-const CoinmarketReviewTransaction = ({ selectedAccount, transaction, decision }: Props) => {
+const CoinmarketReviewTransaction = ({ selectedAccount, reviewData, decision }: Props) => {
     const { device } = useDevice();
     const { cancelSignTx } = useActions({
         cancelSignTx: sendFormActions.cancelSignTx,
     });
 
-    const { transactionInfo, signedTx } = transaction;
+    if (!reviewData) {
+        return null;
+    }
+
+    const { transactionInfo, signedTx } = reviewData;
     if (selectedAccount.status !== 'loaded' || !device || !transactionInfo) return null;
 
     const { symbol, networkType } = selectedAccount.account;

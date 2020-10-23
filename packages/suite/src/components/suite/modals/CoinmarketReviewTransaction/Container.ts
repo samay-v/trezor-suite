@@ -7,7 +7,7 @@ const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
     fiat: state.wallet.fiat,
     settings: state.wallet.settings,
-    transaction: state.wallet.coinmarket.transaction,
+    reviewData: state.wallet.coinmarket.transaction.reviewData,
 });
 
 // Since this modal is opened either in Device or User context

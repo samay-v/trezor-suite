@@ -2,7 +2,11 @@ import TrezorConnect, { FeeLevel, TokenInfo } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { toWei } from 'web3-utils';
 import { getExternalComposeOutput } from '@wallet-utils/exchangeFormUtils';
-import { ComposeTransactionData, SignTransactionData } from '@wallet-types/transaction';
+import {
+    ComposeTransactionData,
+    ReviewTransactionData,
+    SignTransactionData,
+} from '@wallet-types/transaction';
 import * as notificationActions from '@suite-actions/notificationActions';
 import {
     calculateTotal,
@@ -15,6 +19,8 @@ import { amountToSatoshi, formatAmount } from '@wallet-utils/accountUtils';
 import { ETH_DEFAULT_GAS_LIMIT, ERC20_GAS_LIMIT } from '@wallet-constants/sendForm';
 import { PrecomposedLevels, PrecomposedTransaction, ExternalOutput } from '@wallet-types/sendForm';
 import { Dispatch, GetState } from '@suite-types';
+import { outputsWithFinalAddress } from './transactionBitcoinActions';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
 
 const calculate = (
     availableBalance: string,
@@ -226,6 +232,20 @@ export const signTransaction = (data: SignTransactionData) => async (
             ? pendingNonceBig.toString()
             : account.misc.nonce;
 
+    const updatedOutputs = outputsWithFinalAddress(
+        data.address,
+        data.transactionInfo.transaction.outputs,
+    );
+    if (!updatedOutputs) {
+        dispatch(
+            notificationActions.addToast({
+                type: 'sign-tx-error',
+                error: 'Invalid transaction outputs',
+            }),
+        );
+        return;
+    }
+
     // transform to TrezorConnect.ethereumSignTransaction params
     const transaction = prepareEthereumTransaction({
         token: data.transactionInfo.token,
@@ -237,6 +257,15 @@ export const signTransaction = (data: SignTransactionData) => async (
         gasPrice: data.transactionInfo.feePerByte,
         nonce,
     });
+
+    const reviewData: ReviewTransactionData = {
+        signedTx: undefined,
+        transactionInfo: {
+            ...data.transactionInfo,
+            transaction: { ...data.transactionInfo.transaction, outputs: updatedOutputs },
+        },
+    };
+    await dispatch(coinmarketCommonActions.saveTransactionReview(reviewData));
 
     const signedTx = await TrezorConnect.ethereumSignTransaction({
         device: {
@@ -261,8 +290,14 @@ export const signTransaction = (data: SignTransactionData) => async (
         return;
     }
 
-    return serializeEthereumTx({
-        ...transaction,
-        ...signedTx.payload,
-    });
+    return {
+        ...reviewData,
+        signedTx: {
+            tx: serializeEthereumTx({
+                ...transaction,
+                ...signedTx.payload,
+            }),
+            coin: account.symbol,
+        },
+    };
 };

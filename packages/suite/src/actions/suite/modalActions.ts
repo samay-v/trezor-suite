@@ -196,7 +196,7 @@ type DeferredModals = Extract<
         type:
             | 'qr-reader'
             | 'review-transaction'
-            | 'review-transaction-exchange'
+            | 'coinmarket-review-transaction'
             | 'import-transaction'
             | 'coinmarket-buy-terms'
             | 'coinmarket-exchange-terms';

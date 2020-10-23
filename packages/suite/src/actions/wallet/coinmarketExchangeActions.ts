@@ -4,7 +4,7 @@ import * as transactionBitcoinActions from '@wallet-actions/transaction/transact
 import * as transactionEthereumActions from '@wallet-actions/transaction/transactionEthereumActions';
 import * as transactionRippleActions from '@wallet-actions/transaction/transactionRippleActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
-import { SignTransactionData } from '@wallet-types/transaction';
+import { ReviewTransactionData, SignTransactionData } from '@wallet-types/transaction';
 import { Dispatch } from '@suite-types';
 import {
     ExchangeListResponse,
@@ -179,37 +179,31 @@ export const signTransaction = (signTransactionData: SignTransactionData) => asy
 
     if (!account) return;
 
-    let serializedTx: string | undefined;
+    let reviewData: ReviewTransactionData | undefined;
 
     if (account.networkType === 'bitcoin' && transactionInfo) {
-        serializedTx = await dispatch(
-            transactionBitcoinActions.signTransaction(signTransactionData),
-        );
+        reviewData = await dispatch(transactionBitcoinActions.signTransaction(signTransactionData));
     }
 
     if (account.networkType === 'ethereum') {
-        serializedTx = await dispatch(
+        reviewData = await dispatch(
             transactionEthereumActions.signTransaction(signTransactionData),
         );
     }
 
     if (account.networkType === 'ripple') {
-        serializedTx = await dispatch(
-            transactionRippleActions.signTransaction(signTransactionData),
-        );
+        reviewData = await dispatch(transactionRippleActions.signTransaction(signTransactionData));
     }
 
-    if (!serializedTx) return;
+    if (!reviewData?.signedTx?.tx) return;
+
+    await dispatch(coinmarketCommonActions.saveTransactionReview(reviewData));
 
     const decision = await dispatch(
-        modalActions.openDeferredModal({ type: signTransactionData.modalName }),
+        modalActions.openDeferredModal({ type: 'coinmarket-review-transaction' }),
     );
 
-    const signedTx = { tx: serializedTx, coin: account.symbol };
-
-    dispatch(coinmarketCommonActions.saveSignedTx(signedTx));
-
-    if (decision && transactionInfo) {
-        return dispatch(transaction.pushTransaction(signedTx, transactionInfo));
+    if (decision && reviewData.transactionInfo) {
+        return dispatch(transaction.pushTransaction(reviewData));
     }
 };

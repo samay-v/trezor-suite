@@ -1,6 +1,6 @@
 import TrezorConnect, { UI, ButtonRequestMessage } from 'trezor-connect';
 import * as modalActions from '@suite-actions/modalActions';
-import { SignedTx } from '@wallet-types/transaction';
+import { ReviewTransactionData } from '@wallet-types/transaction';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 import { COINMARKET_BUY, COINMARKET_EXCHANGE, COINMARKET_COMMON } from './constants';
@@ -9,10 +9,13 @@ import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarket
 import { Account } from '@wallet-types';
 
 export type CoinmarketCommonActions =
-    | { type: typeof COINMARKET_COMMON.SAVE_SIGNED_TX; signedTx: SignedTx }
     | {
-          type: typeof COINMARKET_COMMON.SAVE_TRANSACTION_INFO;
-          transactionInfo: PrecomposedTransactionFinal;
+          type: typeof COINMARKET_COMMON.SAVE_TRANSACTION_REVIEW;
+          reviewData: ReviewTransactionData;
+      }
+    | {
+          type: typeof COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION;
+          composedTransaction: PrecomposedTransactionFinal;
       };
 
 export const verifyAddress = (account: Account, inExchange = false) => async (
@@ -104,18 +107,20 @@ export const verifyAddress = (account: Account, inExchange = false) => async (
     }
 };
 
-export const saveTransactionInfo = (transactionInfo: PrecomposedTransactionFinal) => async (
+export const saveComposedTransaction = (composedTransaction: PrecomposedTransactionFinal) => async (
     dispatch: Dispatch,
 ) => {
     dispatch({
-        type: COINMARKET_COMMON.SAVE_TRANSACTION_INFO,
-        transactionInfo,
+        type: COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION,
+        composedTransaction,
     });
 };
 
-export const saveSignedTx = (signedTx: SignedTx) => async (dispatch: Dispatch) => {
+export const saveTransactionReview = (reviewData: ReviewTransactionData) => async (
+    dispatch: Dispatch,
+) => {
     dispatch({
-        type: COINMARKET_COMMON.SAVE_SIGNED_TX,
-        signedTx,
+        type: COINMARKET_COMMON.SAVE_TRANSACTION_REVIEW,
+        reviewData,
     });
 };

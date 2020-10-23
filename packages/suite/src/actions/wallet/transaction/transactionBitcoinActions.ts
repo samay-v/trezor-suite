@@ -1,12 +1,17 @@
-import TrezorConnect, { FeeLevel, SignTransaction } from 'trezor-connect';
+import TrezorConnect, { FeeLevel, SignTransaction, TransactionOutput } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
-import { ComposeTransactionData, SignTransactionData } from '@wallet-types/transaction';
+import {
+    ComposeTransactionData,
+    ReviewTransactionData,
+    SignTransactionData,
+} from '@wallet-types/transaction';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getBitcoinComposeOutputs } from '@wallet-utils/exchangeFormUtils';
 import { ZEC_SIGN_ENHANCEMENT } from '@wallet-constants/sendForm';
 import { PrecomposedLevels, PrecomposedTransaction } from '@wallet-types/sendForm';
 import { Dispatch, GetState } from '@suite-types';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
 
 export const composeTransaction = (composeTransactionData: ComposeTransactionData) => async (
     dispatch: Dispatch,
@@ -128,6 +133,25 @@ export const composeTransaction = (composeTransactionData: ComposeTransactionDat
     return wrappedResponse;
 };
 
+// TODO - maybe move to some utils
+export const outputsWithFinalAddress = (address: string, outputs: TransactionOutput[]) => {
+    let updatedOutputsCount = 0;
+    const updatedOutputs = outputs.map(o => {
+        const updated = { ...o };
+        // find the output which has address, other outputs are change outputs, specified by address_n
+        if (o.address) {
+            updatedOutputsCount++;
+            updated.address = address;
+        }
+        return updated;
+    });
+    // sanity check
+    if (updatedOutputsCount !== 1) {
+        return undefined;
+    }
+    return updatedOutputs;
+};
+
 export const signTransaction = (data: SignTransactionData) => async (
     dispatch: Dispatch,
     getState: GetState,
@@ -148,18 +172,8 @@ export const signTransaction = (data: SignTransactionData) => async (
         signEnhancement = ZEC_SIGN_ENHANCEMENT;
     }
 
-    let updatedOutputsCount = 0;
-    const updatedOutputs = transaction.outputs.map(o => {
-        const updated = { ...o };
-        // find the output which has address, other outputs are change outputs, specified by address_n
-        if (o.address) {
-            updatedOutputsCount++;
-            updated.address = address;
-        }
-        return updated;
-    });
-    // sanity check
-    if (updatedOutputsCount !== 1) {
+    const updatedOutputs = outputsWithFinalAddress(address, transaction.outputs);
+    if (!updatedOutputs) {
         dispatch(
             notificationActions.addToast({
                 type: 'sign-tx-error',
@@ -194,6 +208,15 @@ export const signTransaction = (data: SignTransactionData) => async (
         ...signEnhancement,
     };
 
+    const reviewData: ReviewTransactionData = {
+        signedTx: undefined,
+        transactionInfo: {
+            ...transactionInfo,
+            transaction: { ...transaction, inputs, outputs: updatedOutputs },
+        },
+    };
+    await dispatch(coinmarketCommonActions.saveTransactionReview(reviewData));
+
     const signedTx = await TrezorConnect.signTransaction(signPayload);
 
     if (!signedTx.success) {
@@ -208,5 +231,11 @@ export const signTransaction = (data: SignTransactionData) => async (
         return;
     }
 
-    return signedTx.payload.serializedTx;
+    return {
+        ...reviewData,
+        signedTx: {
+            tx: signedTx.payload.serializedTx,
+            coin: account.symbol,
+        },
+    };
 };

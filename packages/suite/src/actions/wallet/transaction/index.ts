@@ -1,7 +1,7 @@
 import { formatNetworkAmount, formatAmount } from '@wallet-utils/accountUtils';
 import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
-import { ComposeTransactionData, SignedTx } from '@wallet-types/transaction';
+import { ComposeTransactionData, ReviewTransactionData, SignedTx } from '@wallet-types/transaction';
 import { GetState, Dispatch } from '@suite-types';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -9,7 +9,6 @@ import * as transactionBitcoinActions from './transactionBitcoinActions';
 import * as transactionEthereumActions from './transactionEthereumActions';
 import * as transactionRippleActions from './transactionRippleActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { PrecomposedTransactionFinal } from '@suite/types/wallet/sendForm';
 
 export const composeTransaction = (composeTransactionData: ComposeTransactionData) => async (
     dispatch: Dispatch,
@@ -40,12 +39,13 @@ export const cancelSignTx = (signedTx: SignedTx) => (dispatch: Dispatch) => {
     dispatch(modalActions.onCancel());
 };
 
-export const pushTransaction = (
-    signedTx: SignedTx,
-    transactionInfo: PrecomposedTransactionFinal,
-) => async (dispatch: Dispatch, getState: GetState) => {
+export const pushTransaction = (reviewData: ReviewTransactionData) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { account } = getState().wallet.selectedAccount;
     const { device } = getState().suite;
+    const { signedTx, transactionInfo } = reviewData;
 
     if (!signedTx || !transactionInfo || !account) return false;
 

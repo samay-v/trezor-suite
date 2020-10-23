@@ -80,8 +80,8 @@ export const useOffers = (props: Props) => {
 
     const transactionInfo = useSelector<
         AppState,
-        AppState['wallet']['coinmarket']['transaction']['transactionInfo']
-    >(state => state.wallet.coinmarket.transaction.transactionInfo);
+        AppState['wallet']['coinmarket']['transaction']['composed']
+    >(state => state.wallet.coinmarket.transaction.composed);
 
     const exchangeCoinInfo = useSelector<
         AppState,
@@ -196,11 +196,10 @@ export const useOffers = (props: Props) => {
             const result = await signTransaction({
                 account,
                 address: selectedQuote.sendAddress,
-                rippleDestinationTag: selectedQuote.partnerPaymentExtraId,
+                destinationTag: selectedQuote.partnerPaymentExtraId,
                 transactionInfo,
                 network,
                 amount: transactionInfo.totalSpent,
-                modalName: 'coinmarket-review-transaction',
             });
             if (result) {
                 await saveTrade(selectedQuote, account, new Date().toISOString());

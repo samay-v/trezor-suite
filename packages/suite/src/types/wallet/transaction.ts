@@ -7,9 +7,8 @@ export interface SignTransactionData {
     address: string;
     amount: string;
     network: Network;
-    rippleDestinationTag?: string;
+    destinationTag?: string;
     transactionInfo: PrecomposedTransactionFinal | null;
-    modalName: 'coinmarket-review-transaction';
 }
 
 export interface ComposeTransactionData {
@@ -29,4 +28,9 @@ export interface ComposeTransactionData {
 export interface SignedTx {
     tx: string;
     coin: string;
+}
+
+export interface ReviewTransactionData {
+    signedTx: SignedTx | undefined;
+    transactionInfo: PrecomposedTransactionFinal;
 }
