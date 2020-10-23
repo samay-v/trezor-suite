@@ -12,8 +12,8 @@ import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accou
 import { XRP_FLAG } from '@wallet-constants/sendForm';
 import { PrecomposedLevels, PrecomposedTransaction, ExternalOutput } from '@wallet-types/sendForm';
 import { Dispatch, GetState } from '@suite-types';
-import { outputsWithFinalAddress } from './transactionBitcoinActions';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
+import { outputsWithFinalAddress } from './coinmarketTransactionBitcoinActions';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 
 const calculate = (
     availableBalance: string,

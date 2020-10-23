@@ -1,10 +1,4 @@
 import { Account } from '@wallet-types';
-import * as transaction from '@wallet-actions/transaction';
-import * as transactionBitcoinActions from '@wallet-actions/transaction/transactionBitcoinActions';
-import * as transactionEthereumActions from '@wallet-actions/transaction/transactionEthereumActions';
-import * as transactionRippleActions from '@wallet-actions/transaction/transactionRippleActions';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
-import { ReviewTransactionData, SignTransactionData } from '@wallet-types/transaction';
 import { Dispatch } from '@suite-types';
 import {
     ExchangeListResponse,
@@ -170,40 +164,4 @@ export const saveQuotes = (fixedQuotes: ExchangeTrade[], floatQuotes: ExchangeTr
         fixedQuotes,
         floatQuotes,
     });
-};
-
-export const signTransaction = (signTransactionData: SignTransactionData) => async (
-    dispatch: Dispatch,
-) => {
-    const { account, transactionInfo } = signTransactionData;
-
-    if (!account) return;
-
-    let reviewData: ReviewTransactionData | undefined;
-
-    if (account.networkType === 'bitcoin' && transactionInfo) {
-        reviewData = await dispatch(transactionBitcoinActions.signTransaction(signTransactionData));
-    }
-
-    if (account.networkType === 'ethereum') {
-        reviewData = await dispatch(
-            transactionEthereumActions.signTransaction(signTransactionData),
-        );
-    }
-
-    if (account.networkType === 'ripple') {
-        reviewData = await dispatch(transactionRippleActions.signTransaction(signTransactionData));
-    }
-
-    if (!reviewData?.signedTx?.tx) return;
-
-    await dispatch(coinmarketCommonActions.saveTransactionReview(reviewData));
-
-    const decision = await dispatch(
-        modalActions.openDeferredModal({ type: 'coinmarket-review-transaction' }),
-    );
-
-    if (decision && reviewData.transactionInfo) {
-        return dispatch(transaction.pushTransaction(reviewData));
-    }
 };

@@ -19,8 +19,8 @@ import { amountToSatoshi, formatAmount } from '@wallet-utils/accountUtils';
 import { ETH_DEFAULT_GAS_LIMIT, ERC20_GAS_LIMIT } from '@wallet-constants/sendForm';
 import { PrecomposedLevels, PrecomposedTransaction, ExternalOutput } from '@wallet-types/sendForm';
 import { Dispatch, GetState } from '@suite-types';
-import { outputsWithFinalAddress } from './transactionBitcoinActions';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
+import { outputsWithFinalAddress } from './coinmarketTransactionBitcoinActions';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 
 const calculate = (
     availableBalance: string,

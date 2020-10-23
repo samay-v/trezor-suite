@@ -3,7 +3,7 @@ import invityAPI from '@suite-services/invityAPI';
 import { useActions } from '@suite-hooks';
 import { BuyTrade } from 'invity-api';
 import { processQuotes } from '@wallet-utils/coinmarket/buyUtils';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as routerActions from '@suite-actions/routerActions';
 import {

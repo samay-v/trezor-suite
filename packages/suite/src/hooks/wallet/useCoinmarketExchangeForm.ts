@@ -6,8 +6,7 @@ import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { PrecomposedLevels, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 import { useInvityAPI } from '@wallet-hooks/useCoinmarket';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
-import * as transactionActions from '@wallet-actions/transaction';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import { useActions } from '@suite-hooks';
 import BigNumber from 'bignumber.js';
 import { NETWORKS } from '@wallet-config';
@@ -68,7 +67,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         saveQuoteRequest: coinmarketExchangeActions.saveQuoteRequest,
         saveQuotes: coinmarketExchangeActions.saveQuotes,
         saveTrade: coinmarketExchangeActions.saveTrade,
-        composeTransaction: transactionActions.composeTransaction,
+        composeTransaction: coinmarketCommonActions.composeTransaction,
         saveComposedTransaction: coinmarketCommonActions.saveComposedTransaction,
         // signTransaction: coinmarketExchangeActions.signTransaction,
     });

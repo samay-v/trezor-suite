@@ -2,7 +2,7 @@ import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 import { CoinmarketBuyActions } from '@wallet-actions/coinmarketBuyActions';
 import { CoinmarketExchangeActions } from '@wallet-actions/coinmarketExchangeActions';
-import { CoinmarketCommonActions } from '@wallet-actions/coinmarketCommonActions';
+import { CoinmarketCommonActions } from '@wallet-actions/coinmarket/coinmarketCommonActions';
 
 import {
     FiatTicker as FiatTicker$,

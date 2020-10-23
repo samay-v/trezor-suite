@@ -11,7 +11,7 @@ import { getBitcoinComposeOutputs } from '@wallet-utils/exchangeFormUtils';
 import { ZEC_SIGN_ENHANCEMENT } from '@wallet-constants/sendForm';
 import { PrecomposedLevels, PrecomposedTransaction } from '@wallet-types/sendForm';
 import { Dispatch, GetState } from '@suite-types';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 
 export const composeTransaction = (composeTransactionData: ComposeTransactionData) => async (
     dispatch: Dispatch,

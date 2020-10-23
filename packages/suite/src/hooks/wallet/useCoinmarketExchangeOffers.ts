@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import invityAPI from '@suite-services/invityAPI';
 import { useActions } from '@suite-hooks';
 import { ExchangeCoinInfo, ExchangeTrade } from 'invity-api';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { Account } from '@wallet-types';
@@ -62,7 +62,7 @@ export const useOffers = (props: Props) => {
         openCoinmarketExchangeConfirmModal:
             coinmarketExchangeActions.openCoinmarketExchangeConfirmModal,
         saveTransactionId: coinmarketExchangeActions.saveTransactionId,
-        signTransaction: coinmarketExchangeActions.signTransaction,
+        signTransaction: coinmarketCommonActions.signTransaction,
         addNotification: notificationActions.addToast,
     });
 
