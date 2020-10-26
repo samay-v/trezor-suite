@@ -1,5 +1,5 @@
-import { NOTIFICATION, MODAL, SUITE } from '@suite-actions/constants';
-import { COINMARKET_BUY, COINMARKET_EXCHANGE, COINMARKET_COMMON } from '@wallet-actions/constants';
+import { MODAL } from '@suite-actions/constants';
+import { COINMARKET_BUY, COINMARKET_EXCHANGE } from '@wallet-actions/constants';
 import { Account } from '@wallet-types';
 import coinmarketReducer from '@wallet-reducers/coinmarketReducer';
 
@@ -296,6 +296,35 @@ export const VERIFY_ADDRESS_FIXTURES = [
                 {
                     type: COINMARKET_BUY.VERIFY_ADDRESS,
                     addressVerified: XRP_ACCOUNT.descriptor,
+                },
+            ],
+        },
+    },
+    {
+        description: 'verifyAddress, ripple account, unavailable device',
+        initialState: {
+            suite: {
+                device: UNAVAILABLE_DEVICE,
+            },
+        },
+        params: {
+            account: XRP_ACCOUNT,
+            inExchange: false,
+        },
+        mocks: {},
+        result: {
+            value: undefined,
+            actions: [
+                {
+                    type: MODAL.OPEN_USER_CONTEXT,
+                    payload: {
+                        type: 'unverified-address',
+                        device: UNAVAILABLE_DEVICE,
+                        address: XRP_ACCOUNT.descriptor,
+                        networkType: XRP_ACCOUNT.networkType,
+                        symbol: XRP_ACCOUNT.symbol,
+                        addressPath: XRP_ACCOUNT.path,
+                    },
                 },
             ],
         },

@@ -155,6 +155,42 @@ export const composeTransaction = (composeTransactionData: ComposeTransactionDat
     }
 };
 
+export const signTransaction = (signTransactionData: SignTransactionData) => async (
+    dispatch: Dispatch,
+) => {
+    const { account } = signTransactionData;
+
+    if (!account) return;
+
+    let reviewData: ReviewTransactionData | undefined;
+
+    if (account.networkType === 'bitcoin') {
+        reviewData = await dispatch(transactionBitcoinActions.signTransaction(signTransactionData));
+    }
+
+    if (account.networkType === 'ethereum') {
+        reviewData = await dispatch(
+            transactionEthereumActions.signTransaction(signTransactionData),
+        );
+    }
+
+    if (account.networkType === 'ripple') {
+        reviewData = await dispatch(transactionRippleActions.signTransaction(signTransactionData));
+    }
+
+    if (!reviewData?.signedTx?.tx) return;
+
+    await dispatch(coinmarketCommonActions.saveTransactionReview(reviewData));
+
+    const decision = await dispatch(
+        modalActions.openDeferredModal({ type: 'coinmarket-review-transaction' }),
+    );
+
+    if (decision && reviewData.transactionInfo) {
+        return dispatch(coinmarketCommonActions.pushTransaction(reviewData));
+    }
+};
+
 export const cancelSignTx = (signedTx: SignedTx) => (dispatch: Dispatch) => {
     if (!signedTx) {
         TrezorConnect.cancel('tx-cancelled');
@@ -175,7 +211,7 @@ export const pushTransaction = (reviewData: ReviewTransactionData) => async (
     if (!signedTx || !transactionInfo || !account) return false;
 
     const sentTx = await TrezorConnect.pushTransaction(signedTx);
-    // const sentTx = { success: true, payload: { txid: 'ABC ' } };
+
     // close modal regardless result
     dispatch(cancelSignTx(signedTx));
 
@@ -211,40 +247,4 @@ export const pushTransaction = (reviewData: ReviewTransactionData) => async (
     }
 
     return sentTx.success;
-};
-
-export const signTransaction = (signTransactionData: SignTransactionData) => async (
-    dispatch: Dispatch,
-) => {
-    const { account, transactionInfo } = signTransactionData;
-
-    if (!account) return;
-
-    let reviewData: ReviewTransactionData | undefined;
-
-    if (account.networkType === 'bitcoin' && transactionInfo) {
-        reviewData = await dispatch(transactionBitcoinActions.signTransaction(signTransactionData));
-    }
-
-    if (account.networkType === 'ethereum') {
-        reviewData = await dispatch(
-            transactionEthereumActions.signTransaction(signTransactionData),
-        );
-    }
-
-    if (account.networkType === 'ripple') {
-        reviewData = await dispatch(transactionRippleActions.signTransaction(signTransactionData));
-    }
-
-    if (!reviewData?.signedTx?.tx) return;
-
-    await dispatch(coinmarketCommonActions.saveTransactionReview(reviewData));
-
-    const decision = await dispatch(
-        modalActions.openDeferredModal({ type: 'coinmarket-review-transaction' }),
-    );
-
-    if (decision && reviewData.transactionInfo) {
-        return dispatch(coinmarketCommonActions.pushTransaction(reviewData));
-    }
 };
