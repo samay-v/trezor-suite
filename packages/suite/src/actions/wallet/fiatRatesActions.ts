@@ -7,7 +7,7 @@ import {
     fetchCoinList,
 } from '@suite/services/coingecko';
 import { isTestnet } from '@wallet-utils/accountUtils';
-import { splitTimestampsByInterval, getBlockbookSafeTime } from '@suite-utils/date';
+import { getBlockbookSafeTime } from '@suite-utils/date';
 import { FIAT } from '@suite-config';
 import { Dispatch, GetState } from '@suite-types';
 import {
@@ -190,10 +190,20 @@ const getStaleTickers = (
     includeTokens?: boolean,
 ) => (_dispatch: Dispatch, getState: GetState): FiatTicker[] => {
     const fiat = getState().wallet.fiat.coins;
-    const { enabledNetworks } = getState().wallet.settings;
+    const {
+        settings: { enabledNetworks },
+        blockchain,
+    } = getState().wallet;
     // TODO: FIAT.tickers is useless now
-    const watchedCoinTickers = FIAT.tickers.filter(t => enabledNetworks.includes(t.symbol));
-    const tokenTickers = fiat.filter(t => !!t.mainNetworkSymbol);
+    const watchedCoinTickers = FIAT.tickers
+        .filter(t => enabledNetworks.includes(t.symbol))
+        // use only connected backends
+        .filter(t => blockchain[t.symbol].connected);
+
+    // use only tokens which mainNetworkSymbol are assigned to watchedCoinTickers
+    const tokenTickers = fiat.filter(
+        t => t.mainNetworkSymbol && watchedCoinTickers.find(w => w.symbol === t.mainNetworkSymbol),
+    );
 
     const needUpdateFn = (t: FiatTicker) => {
         // if no rates loaded yet, load them;
@@ -248,8 +258,7 @@ export const updateLastWeekRates = () => async (dispatch: Dispatch, getState: Ge
     const currentTimestamp = getBlockbookSafeTime();
     const weekAgoTimestamp = currentTimestamp - 7 * 86400;
 
-    // calc timestamps in 1 hour intervals the last 7 days
-    const timestamps = splitTimestampsByInterval(weekAgoTimestamp, currentTimestamp, 3600, true);
+    const timestamps = [weekAgoTimestamp, currentTimestamp];
 
     const lastWeekStaleFn = (coinRates: CoinFiatRates) => {
         if (coinRates.lastWeek?.tickers[0]?.rates[localCurrency]) {

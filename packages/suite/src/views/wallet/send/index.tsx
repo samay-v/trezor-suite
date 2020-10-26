@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-
 import { Card } from '@suite-components';
 import { WalletLayout } from '@wallet-components';
 import { useSendForm, SendContext } from '@wallet-hooks/useSendForm';
@@ -37,7 +36,7 @@ const mapStateToProps = (state: AppState): SendFormProps => ({
 const SendLoaded = (props: UseSendFormProps) => {
     const sendContextValues = useSendForm(props);
     return (
-        <WalletLayout title="Send" account={props.selectedAccount}>
+        <WalletLayout title="TR_NAV_SEND" account={props.selectedAccount}>
             <SendContext.Provider value={sendContextValues}>
                 <StyledCard customHeader={<Header />}>
                     <Outputs />
@@ -53,13 +52,14 @@ const SendLoaded = (props: UseSendFormProps) => {
 
 const Send = (props: SendFormProps) => {
     const { selectedAccount } = props;
+
     if (selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="Send" account={selectedAccount} />;
+        return <WalletLayout title="TR_NAV_SEND" account={selectedAccount} />;
     }
 
     if (props.sendRaw) {
         return (
-            <WalletLayout title="Send" account={selectedAccount}>
+            <WalletLayout title="TR_NAV_SEND" account={selectedAccount}>
                 <Raw network={selectedAccount.network} />
             </WalletLayout>
         );

@@ -21,7 +21,7 @@ const Content = ({ selectedAccount, showSummary, children }: ContentProps) => {
     const { account, network } = selectedAccount;
 
     return (
-        <WalletLayout title="Transactions" account={selectedAccount}>
+        <WalletLayout title="TR_NAV_TRANSACTIONS" account={selectedAccount}>
             {showSummary && account.networkType !== 'ripple' && (
                 <TransactionSummary account={account} />
             )}
@@ -49,7 +49,7 @@ const Transactions = (props: Props) => {
     }, [descriptor, symbol]);
 
     if (selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="Transactions" account={props.selectedAccount} />;
+        return <WalletLayout title="TR_NAV_TRANSACTIONS" account={props.selectedAccount} />;
     }
 
     const { account } = selectedAccount;

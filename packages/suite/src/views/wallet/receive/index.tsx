@@ -9,14 +9,14 @@ const Receive = ({ selectedAccount, receive, device, showAddress }: Props) => {
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked(true);
     if (!device || selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="Receive" account={selectedAccount} />;
+        return <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount} />;
     }
 
     const { account } = selectedAccount;
     const disabled = !!device.authConfirm;
 
     return (
-        <WalletLayout title="Receive" account={selectedAccount}>
+        <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount}>
             <FreshAddress
                 account={account}
                 addresses={receive}

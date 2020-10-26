@@ -9,54 +9,28 @@ const TREZOR_PROCESS_NAME = 'trezord';
 const res = isDev ? './public/static' : process.resourcesPath;
 
 const error = (msg: string | Error) => {
-    throw new Error(`cannot run bridge library - ${msg}`);
+    throw new Error(`cannot run bridge binary - ${msg}`);
 };
 
-const getBridgeVersion = () => {
-    return '2.0.27';
-};
-
-const getArch = () => {
+const getPlatformArchExt = () => {
+    let platform = os.platform().toString();
+    if (platform === 'darwin') platform = 'mac';
+    if (platform === 'win32') platform = 'win';
     const arch = os.arch();
-    switch (arch) {
-        case 'x32':
-            return 'x32';
-        case 'x64':
-            return 'x64';
-        default:
-            error('unsupported system architecture');
+    const ext = platform === 'win' ? '.exe' : '';
+    const system = `${platform}-${arch}`;
+    const supportedSystems = ['linux-x64', 'mac-x64', 'win-x64'];
+    if (supportedSystems.includes(system)) {
+        return [platform, arch, ext];
     }
+    error(`unsupported system ${platform} ${arch}`);
 };
 
-const getOS = () => {
-    const platform = os.platform();
-    switch (platform) {
-        case 'linux':
-            return 'linux';
-        case 'darwin':
-            return 'mac';
-        case 'win32':
-            return 'win';
-        default:
-            error('unsupported OS');
-    }
-};
-
-const getBridgeLibByOs = () => {
-    const os = getOS();
-    const arch = getArch();
-    const bridgeVersion = getBridgeVersion();
-    const filePath = `bridge/${bridgeVersion}`;
-
-    switch (os) {
-        case 'mac':
-            return join(res, filePath, `trezord-mac`);
-        case 'linux':
-            return join(res, filePath, `trezord-linux-${arch}`);
-        case 'win':
-            return join(res, filePath, `trezord-win.exe`);
-        default:
-            error(`cannot find library`);
+const getBridgeBinBySystem = () => {
+    const sys = getPlatformArchExt();
+    if (sys) {
+        const [platform, arch, ext] = sys;
+        return join(res, 'bridge', `trezord-${platform}-${arch}${ext}`);
     }
 };
 
@@ -94,10 +68,10 @@ export const runBridgeProcess = async (devMode?: boolean) => {
         process.kill(bridgeProcess.pid);
     }
 
-    const lib = getBridgeLibByOs();
+    const bin = getBridgeBinBySystem();
     const args = devMode ? ['-e', '21324'] : [];
-    if (lib) {
-        spawnProcess(lib, args);
+    if (bin) {
+        spawnProcess(bin, args);
     }
 };
 

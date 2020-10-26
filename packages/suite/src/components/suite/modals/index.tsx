@@ -245,6 +245,7 @@ const Modal = (props: Props) => {
     return React.cloneElement(modalComponent, {
         noBackground: true,
         showHeaderBorder: false,
+        noPadding: true,
         cancelable: false,
     });
 };

@@ -41,7 +41,7 @@ const StyledRow = styled(Row)`
 const Details = ({ selectedAccount, openModal }: Props) => {
     const { device, isLocked } = useDevice();
     if (!device || selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="Account details" account={selectedAccount} />;
+        return <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount} />;
     }
 
     const { account } = selectedAccount;
@@ -64,7 +64,7 @@ const Details = ({ selectedAccount, openModal }: Props) => {
     }
 
     return (
-        <WalletLayout title="Account details" account={selectedAccount}>
+        <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount}>
             <StyledCard title={<Translation id="TR_ACCOUNT_DETAILS_HEADER" />} largePadding>
                 <StyledRow>
                     <TextColumn
