@@ -43,7 +43,7 @@ const DetailIndex = (props: ComponentProps) => {
     const { selectedAccount } = props;
 
     if (selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="Coinmarket | exchange" account={selectedAccount} />;
+        return <WalletLayout title="TR_NAV_EXCHANGE" account={selectedAccount} />;
     }
     return <DetailIndexLoaded {...props} selectedAccount={selectedAccount} />;
 };
