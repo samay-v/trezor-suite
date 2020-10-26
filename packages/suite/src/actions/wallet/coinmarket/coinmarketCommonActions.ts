@@ -146,6 +146,7 @@ export const composeTransaction = (composeTransactionData: ComposeTransactionDat
     }
 
     if (networkType === 'ethereum') {
+        console.log('bbb');
         return dispatch(transactionEthereumActions.composeTransaction(composeTransactionData));
     }
 

@@ -1,7 +1,9 @@
 import { colors, variables } from '@trezor/components';
 import React from 'react';
 import BigNumber from 'bignumber.js';
+import { Translation } from '@suite-components';
 import styled from 'styled-components';
+import { invityApiSymbolToSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { useCoinmarketExchangeFormContext } from '@suite/hooks/wallet/useCoinmarketExchangeForm';
 
 const Wrapper = styled.div`
@@ -40,7 +42,8 @@ const Button = styled.div`
 
 const Bottom = () => {
     const { compose, token, account, setMax, network } = useCoinmarketExchangeFormContext();
-    const tokenData = account.tokens?.find(t => t.symbol === token);
+    const formattedToken = invityApiSymbolToSymbol(token);
+    const tokenData = account.tokens?.find(t => t.symbol === formattedToken);
 
     return (
         <Wrapper>
@@ -62,9 +65,13 @@ const Bottom = () => {
                         compose({
                             setMax: false,
                             fillValue: true,
-                            amount: new BigNumber(account.formattedBalance)
-                                .dividedBy(2)
-                                .toFixed(network.decimals),
+                            amount: tokenData
+                                ? new BigNumber(tokenData.balance || '0')
+                                      .dividedBy(2)
+                                      .toFixed(tokenData.decimals)
+                                : new BigNumber(account.formattedBalance)
+                                      .dividedBy(2)
+                                      .toFixed(network.decimals),
                         });
                     }}
                 >
@@ -76,9 +83,13 @@ const Bottom = () => {
                         compose({
                             setMax: false,
                             fillValue: true,
-                            amount: new BigNumber(account.formattedBalance)
-                                .dividedBy(4)
-                                .toFixed(network.decimals),
+                            amount: tokenData
+                                ? new BigNumber(tokenData.balance || '0')
+                                      .dividedBy(4)
+                                      .toFixed(tokenData.decimals)
+                                : new BigNumber(account.formattedBalance)
+                                      .dividedBy(4)
+                                      .toFixed(network.decimals),
                         });
                     }}
                 >
@@ -87,9 +98,10 @@ const Bottom = () => {
             </Left>
             <TokenBalance>
                 {tokenData && (
-                    <TokenBalanceValue>{`${
-                        tokenData.balance
-                    } ${tokenData.symbol!.toUpperCase()}`}</TokenBalanceValue>
+                    <TokenBalanceValue>
+                        <Translation id="TOKEN_BALANCE" values={{ balance: tokenData.balance }} />
+                        {tokenData.symbol ? ` ${tokenData.symbol.toUpperCase()}` : ''}
+                    </TokenBalanceValue>
                 )}
             </TokenBalance>
         </Wrapper>

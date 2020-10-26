@@ -1,14 +1,21 @@
 import { Account } from '@wallet-types';
 
+const suiteToInvitySymbols = [{ suiteSymbol: 'usdt', invitySymbol: 'usdt20' }];
+
 export const buildOption = (currency: string) => {
     return { value: currency, label: currency.toUpperCase() };
 };
 
-export const symbolToInvityApiSymbol = (symbol: string) => {
-    if (symbol === 'usdt') {
-        return 'usdt20';
-    }
-    return symbol;
+export const invityApiSymbolToSymbol = (symbol?: string) => {
+    if (!symbol) return 'UNKNOWN';
+    const result = suiteToInvitySymbols.find(s => s.invitySymbol === symbol.toLowerCase());
+    return result ? result.suiteSymbol : symbol;
+};
+
+export const symbolToInvityApiSymbol = (symbol?: string) => {
+    if (!symbol) return 'UNKNOWN';
+    const result = suiteToInvitySymbols.find(s => s.suiteSymbol === symbol.toLowerCase());
+    return result ? result.invitySymbol : symbol;
 };
 
 export function formatCryptoAmount(amount: number, decimals = 8): string {

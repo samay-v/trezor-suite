@@ -100,7 +100,6 @@ const calculate = (
 
 export const composeTransaction = (composeTransactionData: ComposeTransactionData) => async () => {
     const { account, network, feeInfo, ethereumDataHex } = composeTransactionData;
-
     const composeOutputs = getExternalComposeOutput(composeTransactionData);
     if (!composeOutputs) return; // no valid Output
 
@@ -204,6 +203,7 @@ export const composeTransaction = (composeTransactionData: ComposeTransactionDat
 
     return wrappedResponse;
 };
+
 export const signTransaction = (data: SignTransactionData) => async (
     dispatch: Dispatch,
     getState: GetState,

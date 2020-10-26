@@ -2,6 +2,7 @@ import { ExternalOutput } from '@wallet-types/sendForm';
 import { amountToSatoshi, networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { ComposeOutput } from 'trezor-connect';
 import { ComposeTransactionData } from '@wallet-types/transaction';
+import { invityApiSymbolToSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 
 export const getExternalComposeOutput = ({
     account,
@@ -10,13 +11,15 @@ export const getExternalComposeOutput = ({
     amount,
     token,
     isMaxActive,
+    isInvity,
 }: ComposeTransactionData) => {
-    if (!isMaxActive && !amount) return; // incomplete Output
-
-    const tokenInfo = account.tokens?.find(t => t.symbol === token);
+    const formattedToken = isInvity ? invityApiSymbolToSymbol(token) : token;
+    const tokenInfo = account.tokens?.find(t => t.symbol === formattedToken);
+    console.log('tokenInfo', tokenInfo);
     const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
+    console.log('decimals', decimals);
     const amountInSatoshi = amountToSatoshi(amount, decimals);
-
+    console.log('amountInSatoshi', amountInSatoshi);
     let output: ExternalOutput;
     if (isMaxActive) {
         if (address) {

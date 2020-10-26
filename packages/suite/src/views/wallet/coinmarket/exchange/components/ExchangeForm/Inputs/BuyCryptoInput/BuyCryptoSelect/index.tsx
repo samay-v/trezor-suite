@@ -22,6 +22,7 @@ const BuyCryptoSelect = () => {
         setMax,
         exchangeInfo,
         setToken,
+        compose,
     } = useCoinmarketExchangeFormContext();
     const buyCryptoSelect = 'buyCryptoSelect';
     const uppercaseSymbol = account.symbol.toUpperCase();
@@ -47,6 +48,7 @@ const BuyCryptoSelect = () => {
                             } else {
                                 setToken(lowerCaseToken);
                             }
+                            compose({ token: lowerCaseToken });
                         }}
                         formatOptionLabel={(option: any) => {
                             return (

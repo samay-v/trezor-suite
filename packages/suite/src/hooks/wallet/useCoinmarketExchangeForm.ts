@@ -62,14 +62,12 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         saveTrade,
         composeTransaction,
         saveComposedTransaction,
-        // signTransaction,
     } = useActions({
         saveQuoteRequest: coinmarketExchangeActions.saveQuoteRequest,
         saveQuotes: coinmarketExchangeActions.saveQuotes,
         saveTrade: coinmarketExchangeActions.saveTrade,
         composeTransaction: coinmarketCommonActions.composeTransaction,
         saveComposedTransaction: coinmarketCommonActions.saveComposedTransaction,
-        // signTransaction: coinmarketExchangeActions.signTransaction,
     });
 
     const { goto } = useActions({ goto: routerActions.goto });
@@ -94,19 +92,6 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         } else {
             const [fixedQuotes, floatQuotes] = splitToFixedFloatQuotes(allQuotes, exchangeInfo);
             await saveQuotes(fixedQuotes, floatQuotes);
-            // if (transactionInfo) {
-            //     const address =
-            //         transactionInfo.transaction.outputs.find(o => o.address)?.address || '';
-            //     await signTransaction({
-            //         account,
-            //         address,
-            //         transactionInfo,
-            //         network,
-            //         amount: transactionInfo.totalSpent,
-            //     });
-
-            //     return;
-            // }
             goto('wallet-coinmarket-exchange-offers', {
                 symbol: account.symbol,
                 accountIndex: account.index,
@@ -170,9 +155,9 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         const feeLevel = feeInfo.levels.find(level => level.label === data.feeLevelLabel);
         const selectedFeeLevel =
             feeLevel || feeInfo.levels.find(level => level.label === selectedFee);
-
         if (!selectedFeeLevel) return null;
         const placeholderAddress = await getComposeAddressPlaceholder();
+
         const result: PrecomposedLevels | undefined = await composeTransaction({
             account,
             amount: data && data.amount ? data.amount : formValues.buyCryptoInput || '0',
@@ -185,7 +170,8 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
             selectedFee,
             isMaxActive: data && data.setMax ? data.setMax || false : false,
             address: placeholderAddress,
-            token,
+            token: data && data.token ? data.token : formValues.buyCryptoSelect.value || undefined,
+            isInvity: true,
         });
 
         const transactionInfo = result ? result[selectedFeeLevel.label] : null;

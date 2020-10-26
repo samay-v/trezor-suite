@@ -1,8 +1,8 @@
 import { Icon, variables } from '@trezor/components';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { invityApiSymbolToSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { useCoinmarketExchangeFormContext } from '@suite/hooks/wallet/useCoinmarketExchangeForm';
-
 import BuyCryptoInput from './BuyCryptoInput';
 import FiatInput from './FiatInput';
 import SellCryptoSelect from './SellCryptoSelect';
@@ -52,8 +52,9 @@ const StyledIcon = styled(Icon)`
 `;
 
 const Inputs = () => {
-    const { trigger, amountLimits } = useCoinmarketExchangeFormContext();
-
+    const { trigger, amountLimits, token, account } = useCoinmarketExchangeFormContext();
+    const formattedToken = invityApiSymbolToSymbol(token);
+    const tokenData = account.tokens?.find(t => t.symbol === formattedToken);
     useEffect(() => {
         trigger(['buyCryptoInput']);
     }, [amountLimits, trigger]);
@@ -63,7 +64,7 @@ const Inputs = () => {
             <Top>
                 <LeftWrapper>
                     <BuyCryptoInput />
-                    <FiatInput />
+                    {!tokenData && <FiatInput />}
                 </LeftWrapper>
                 <MiddleWrapper>
                     <StyledIcon icon="TRANSFER" size={16} />

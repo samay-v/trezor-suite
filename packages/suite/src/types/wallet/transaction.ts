@@ -23,6 +23,7 @@ export interface ComposeTransactionData {
     address?: string;
     token?: string;
     ethereumDataHex?: string;
+    isInvity?: boolean;
 }
 
 export interface SignedTx {
