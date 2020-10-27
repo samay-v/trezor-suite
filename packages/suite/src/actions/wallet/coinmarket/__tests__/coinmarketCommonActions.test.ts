@@ -33,7 +33,7 @@ const initStore = (state: State) => {
 
 jest.mock('trezor-connect', () => {
     let fixture: any;
-    let buttonRequest: Function | undefined;
+    let buttonRequest: ((e?: any) => any) | undefined;
     let fixtureIndex = 0;
 
     const getAddress = (_params: any) => {
@@ -61,7 +61,7 @@ jest.mock('trezor-connect', () => {
         default: {
             blockchainSetCustomBackend: () => {},
             init: () => null,
-            on: (event: string, cb: Function) => {
+            on: (event: string, cb: (e?: any) => any) => {
                 if (event === 'ui-button') buttonRequest = cb;
             },
             off: () => {
