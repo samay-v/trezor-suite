@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormattedDate } from 'react-intl';
-import { useSelector } from 'react-redux';
+import { useSelector } from '@suite-hooks';
 import styled from 'styled-components';
 import { ExchangeProviderInfo, ExchangeTradeQuoteRequest } from 'invity-api';
 import { Button, colors, Icon, variables } from '@trezor/components';
@@ -16,7 +16,6 @@ import { useActions } from '@suite/hooks/suite';
 import invityAPI from '@suite-services/invityAPI';
 import { getStatusMessage, splitToFixedFloatQuotes } from '@wallet-utils/coinmarket/exchangeUtils';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { AppState } from '@suite-types';
 
 interface Props {
     trade: TradeExchange;
@@ -121,10 +120,7 @@ const ExchangeTransaction = ({ trade, providers, account }: Props) => {
     });
     const [isGettingOffers, setIsGettingOffers] = useState(false);
     useWatchExchangeTrade(account, trade);
-    const exchangeInfo = useSelector<
-        AppState,
-        AppState['wallet']['coinmarket']['exchange']['exchangeInfo']
-    >(state => state.wallet.coinmarket.exchange.exchangeInfo);
+    const exchangeInfo = useSelector(state => state.wallet.coinmarket.exchange.exchangeInfo);
 
     const { date, data } = trade;
     const { status, send, sendStringAmount, receive, receiveStringAmount, exchange } = data;
