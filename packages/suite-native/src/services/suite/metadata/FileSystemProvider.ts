@@ -1,13 +1,10 @@
 import { AbstractMetadataProvider, Result } from '@suite-types/metadata';
-import Google from '../google';
 
-class GoogleProvider extends AbstractMetadataProvider {
-    client: Google;
+class FileSystemProvider extends AbstractMetadataProvider {
+    isCloud = true;
 
     constructor(_token?: string) {
-        super('google');
-        console.warn('native-GoogleProvider');
-        this.client = new Google();
+        super('fileSystem');
     }
 
     async connect() {
@@ -19,12 +16,12 @@ class GoogleProvider extends AbstractMetadataProvider {
     }
 
     // @ts-ignore
-    async getCredentials(): any {
-        const type = 'google' as const;
+    async getProviderDetails(): any {
         return this.ok({
-            type,
-            token: 'token',
-            user: 'foo',
+            type: this.type,
+            isCloud: this.isCloud,
+            token: '',
+            user: '',
         });
     }
 
@@ -47,4 +44,4 @@ class GoogleProvider extends AbstractMetadataProvider {
     }
 }
 
-export default GoogleProvider;
+export default FileSystemProvider;

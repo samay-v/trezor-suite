@@ -1,30 +1,28 @@
 import { createContext, useContext } from 'react';
 import { Props, ContextValues } from '@wallet-types/coinmarketBuyDetail';
 import { useWatchBuyTrade } from '@wallet-hooks/useCoinmarket';
-import { useSelector } from 'react-redux';
+import { useSelector } from '@suite-hooks';
 import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
-import { AppState } from '@suite-types';
 import invityAPI from '@suite-services/invityAPI';
 
 export const useCoinmarketBuyDetail = (props: Props) => {
     const { selectedAccount, trades, transactionId } = props;
-    const buyTrade = trades.find(trade => trade.tradeType === 'buy' && trade.key === transactionId);
+    const buyTrade = trades.find(
+        trade =>
+            trade.tradeType === 'buy' &&
+            (trade.key === transactionId || trade.data?.originalPaymentId === transactionId),
+    );
     const { account } = selectedAccount;
-    const invityAPIUrl = useSelector<
-        AppState,
-        AppState['suite']['settings']['debug']['invityAPIUrl']
-    >(state => state.suite.settings.debug.invityAPIUrl);
+    const invityAPIUrl = useSelector(state => state.suite.settings.debug.invityAPIUrl);
     if (invityAPIUrl) {
         invityAPI.setInvityAPIServer(invityAPIUrl);
     }
-    const buyInfo = useSelector<AppState, AppState['wallet']['coinmarket']['buy']['buyInfo']>(
-        state => state.wallet.coinmarket.buy.buyInfo,
-    );
+    const buyInfo = useSelector(state => state.wallet.coinmarket.buy.buyInfo);
     useWatchBuyTrade(account, buyTrade as TradeBuy);
 
     return {
         account,
-        trade: buyTrade as TradeBuy | undefined,
+        trade: buyTrade as TradeBuy,
         transactionId,
         buyInfo,
     };

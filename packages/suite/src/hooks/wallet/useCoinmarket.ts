@@ -1,39 +1,26 @@
-import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { BuyTradeStatus, ExchangeTradeStatus } from 'invity-api';
 import { useUnmount, useTimeoutFn } from 'react-use';
 import invityAPI from '@suite-services/invityAPI';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { Account } from '@wallet-types';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import { TradeBuy, TradeExchange } from '@wallet-reducers/coinmarketReducer';
-import { AppState } from '@suite-types';
 import { loadBuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 
 export const useInvityAPI = () => {
-    const selectedAccount = useSelector<AppState, AppState['wallet']['selectedAccount']>(
-        state => state.wallet.selectedAccount,
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+
+    const buyInfo = useSelector(state => state.wallet.coinmarket.buy.buyInfo);
+
+    const exchangeInfo = useSelector(state => state.wallet.coinmarket.exchange.exchangeInfo);
+
+    const exchangeCoinInfo = useSelector(
+        state => state.wallet.coinmarket.exchange.exchangeCoinInfo,
     );
 
-    const buyInfo = useSelector<AppState, AppState['wallet']['coinmarket']['buy']['buyInfo']>(
-        state => state.wallet.coinmarket.buy.buyInfo,
-    );
-
-    const exchangeInfo = useSelector<
-        AppState,
-        AppState['wallet']['coinmarket']['exchange']['exchangeInfo']
-    >(state => state.wallet.coinmarket.exchange.exchangeInfo);
-
-    const exchangeCoinInfo = useSelector<
-        AppState,
-        AppState['wallet']['coinmarket']['exchange']['exchangeCoinInfo']
-    >(state => state.wallet.coinmarket.exchange.exchangeCoinInfo);
-
-    const invityAPIUrl = useSelector<
-        AppState,
-        AppState['suite']['settings']['debug']['invityAPIUrl']
-    >(state => state.suite.settings.debug.invityAPIUrl);
+    const invityAPIUrl = useSelector(state => state.suite.settings.debug.invityAPIUrl);
 
     const { saveBuyInfo } = useActions({ saveBuyInfo: coinmarketBuyActions.saveBuyInfo });
     const { saveExchangeInfo, saveExchangeCoinInfo } = useActions({

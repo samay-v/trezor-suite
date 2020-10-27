@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 import fs from 'fs';
 import path from 'path';
@@ -9,7 +10,7 @@ import deviceReducer from '@suite-reducers/deviceReducer';
 import { STORAGE, MODAL } from '../constants';
 import * as metadataActions from '../metadataActions';
 import * as fixtures from '../__fixtures__/metadataActions';
-import DropboxProvider from '@suite/services/metadata/DropboxProvider';
+import DropboxProvider from '@suite-services/metadata/DropboxProvider';
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 import accountsReducer from '@wallet-reducers/accountsReducer';
 
@@ -60,6 +61,7 @@ jest.mock('dropbox', () => {
         getAccessToken() {
             return 'token-haf-mnau';
         }
+        refreshAccessToken() {}
     }
     return {
         __esModule: true, // this property makes it work
@@ -186,7 +188,7 @@ describe('Metadata Actions', () => {
 
     fixtures.connectProvider.forEach(f => {
         it(`connectProvider - ${f.description}`, async () => {
-            jest.mock('@suite/services/metadata/DropboxProvider');
+            jest.mock('@suite-services/metadata/DropboxProvider');
             DropboxProvider.prototype.connect = () => Promise.resolve(true);
 
             // @ts-ignore
@@ -204,13 +206,14 @@ describe('Metadata Actions', () => {
 
     fixtures.addMetadata.forEach(f => {
         it(`add metadata - ${f.description}`, async () => {
-            jest.mock('@suite/services/metadata/DropboxProvider');
+            jest.mock('@suite-services/metadata/DropboxProvider');
             DropboxProvider.prototype.connect = () => Promise.resolve(true);
-            DropboxProvider.prototype.getCredentials = () =>
+            DropboxProvider.prototype.getProviderDetails = () =>
                 Promise.resolve({
                     success: true,
                     payload: {
                         type: 'dropbox',
+                        isCloud: true,
                         token: 'token',
                         user: 'power-user',
                     },
@@ -271,8 +274,9 @@ describe('Metadata Actions', () => {
         });
     });
 
-    fixtures.initMetadata.forEach(f => {
+    fixtures.init.forEach(f => {
         it(`initMetadata - ${f.description}`, async () => {
+            jest.mock('@suite-services/metadata/DropboxProvider');
             // @ts-ignore
             const store = initStore(getInitialState(f.initialState));
             // @ts-ignore, params

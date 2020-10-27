@@ -37,16 +37,17 @@ contextBridge.exposeInMainWorld('desktopApi', {
             ipcRenderer.send(channel, data);
         }
     },
-    on: (channel: string, func: Function) => {
+    on: (channel: string, func: (...args: any[]) => any) => {
         if (validChannels.includes(channel)) {
             ipcRenderer.on(channel, (_, ...args) => func(...args));
         }
     },
-    off: (channel: string, func: Function) => {
+    off: (channel: string, func: (...args: any[]) => any) => {
         if (validChannels.includes(channel)) {
             ipcRenderer.off(channel, (_, ...args) => func(...args));
         }
     },
+
     // Updater
     checkForUpdates: () => ipcRenderer.send('update/check'),
     downloadUpdate: () => ipcRenderer.send('update/download'),
@@ -62,4 +63,9 @@ contextBridge.exposeInMainWorld('desktopApi', {
 
     // Client
     clientReady: () => ipcRenderer.send('client/ready'),
+
+    // Metadata
+    metadataRead: (options: { file: string }) => ipcRenderer.invoke('metadata/read', options),
+    metadataWrite: (options: { file: string; content: string }) =>
+        ipcRenderer.invoke('metadata/write', options),
 });

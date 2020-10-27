@@ -4,7 +4,7 @@ import { createDeferred } from '@suite-utils/deferred';
 import { Dispatch, GetState } from '@suite-types';
 import {
     MetadataProviderType,
-    MetadataProviderCredentials,
+    MetadataProvider,
     MetadataAddPayload,
     DeviceMetadata,
     Error as MetadataProviderError,
@@ -14,8 +14,9 @@ import { Account } from '@wallet-types';
 import * as metadataUtils from '@suite-utils/metadata';
 import * as modalActions from '@suite-actions/modalActions';
 import * as notificationActions from '@suite-actions/notificationActions';
-import DropboxProvider from '@suite/services/metadata/DropboxProvider';
-import GoogleProvider from '@suite/services/metadata/GoogleProvider';
+import DropboxProvider from '@suite-services/metadata/DropboxProvider';
+import GoogleProvider from '@suite-services/metadata/GoogleProvider';
+import FileSystemProvider from '@suite-services/metadata/FileSystemProvider';
 
 export type MetadataActions =
     | { type: typeof METADATA.ENABLE }
@@ -28,7 +29,7 @@ export type MetadataActions =
       }
     | {
           type: typeof METADATA.SET_PROVIDER;
-          payload: MetadataProviderCredentials | undefined;
+          payload: MetadataProvider | undefined;
       }
     | {
           type: typeof METADATA.WALLET_LOADED | typeof METADATA.WALLET_ADD;
@@ -40,18 +41,17 @@ export type MetadataActions =
       };
 
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
-let providerInstance: DropboxProvider | GoogleProvider | undefined;
+let providerInstance: DropboxProvider | GoogleProvider | FileSystemProvider | undefined;
 const fetchIntervals: { [deviceState: string]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
-const createProvider = (
-    type: MetadataProviderCredentials['type'],
-    token?: MetadataProviderCredentials['token'],
-) => {
+const createProvider = (type: MetadataProvider['type'], token?: MetadataProvider['token']) => {
     switch (type) {
         case 'dropbox':
             return new DropboxProvider(token);
         case 'google':
             return new GoogleProvider(token);
+        case 'fileSystem':
+            return new FileSystemProvider();
         default:
             throw new Error(`provider of type ${type} is not implemented`);
     }
@@ -241,7 +241,7 @@ export const fetchMetadata = (deviceState: string) => async (
 
     // this triggers renewal of access token if needed. Otherwise multiple requests
     // to renew access token are issued by every provider.getFileContent
-    const response = await provider.getCredentials();
+    const response = await provider.getProviderDetails();
     if (!response.success) return;
 
     const deviceFileContentP = new Promise((resolve, reject) => {
@@ -272,8 +272,6 @@ export const fetchMetadata = (deviceState: string) => async (
                     );
                 } catch (err) {
                     const error = provider.error('OTHER_ERROR', err.message);
-                    // dispatch(handleProviderError(error, ProviderErrorAction.LOAD));
-                    // todo: ?
                     return reject(error);
                 }
             }
@@ -317,7 +315,6 @@ export const fetchMetadata = (deviceState: string) => async (
                 //     TODO: migration
                 // }
             } catch (err) {
-                // todo? ??
                 const error = provider.error('OTHER_ERROR', err.message);
                 return dispatch(handleProviderError(error, ProviderErrorAction.LOAD));
             }
@@ -392,18 +389,18 @@ const syncMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
 
 export const connectProvider = (type: MetadataProviderType) => async (dispatch: Dispatch) => {
     let provider = await dispatch(getProvider());
+
     if (!provider) {
         provider = createProvider(type);
     }
-    const isConnected = await provider.isConnected();
+    let isConnected = await provider.isConnected();
     if (provider && !isConnected) {
-        const connected = await provider.connect();
-        if (!connected) {
-            return;
-        }
+        isConnected = await provider.connect();
     }
-
-    const result = await provider.getCredentials();
+    if (!isConnected) {
+        return;
+    }
+    const result = await provider.getProviderDetails();
     if (!result.success) {
         dispatch(handleProviderError(result, ProviderErrorAction.CONNECT));
         return;
@@ -533,21 +530,6 @@ export const addAccountMetadata = (
         return false;
     }
     return true;
-    // const { ipcRenderer } = global;
-    // if (ipcRenderer) {
-    //     const onIpcSave = (sender, message) => {
-    //         console.warn('onIpcSave', message);
-    //     };
-
-    //     const onIpcRead = (sender, message) => {
-    //         console.warn('onIpcRead', message);
-    //     };
-    //     ipcRenderer.on('metadata-on-save', onIpcSave);
-    //     ipcRenderer.on('metadata-on-read', onIpcRead);
-
-    //     ipcRenderer.send('metadata-save', { file: 'foo.txt', content: 'content!' });
-    //     ipcRenderer.send('metadata-read', { file: 'foo.txt' });
-    // }
 };
 
 /**
@@ -633,7 +615,7 @@ export const addMetadata = (payload: MetadataAddPayload) => async (dispatch: Dis
 };
 
 /**
- * initMetadata - prepare everything needed to load + decrypt and upload + decrypt metadata. Note that this method
+ * init - prepare everything needed to load + decrypt and upload + decrypt metadata. Note that this method
  * consists of number of steps of which not all have to necessarily happen. For example
  * user may directly navigate to /settings, enable metadata (by invoking init), but his device
  * does not have state yet.

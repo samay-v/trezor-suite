@@ -1,8 +1,8 @@
 // Interface for exposed Electron API (ipcRenderer)
 export interface DesktopApi {
     send: (channel: string, data?: any) => void;
-    on: (channel: string, func: Function) => void;
-    off: (channel: string, func: Function) => void;
+    on: (channel: string, func: (...args: any[]) => any) => void;
+    off: (channel: string, func: (...args: any[]) => any) => void;
     // App Ready
     ready: () => void;
     // Auto Updater
@@ -18,6 +18,14 @@ export interface DesktopApi {
     windowUnmaximize: () => void;
     // Client controls
     clientReady: () => void;
+    // Metadata
+    metadataWrite: (options: {
+        file: string;
+        content: string;
+    }) => Promise<{ success: true } | { success: false; error: string }>;
+    metadataRead: (options: {
+        file: string;
+    }) => Promise<{ success: true; payload: string } | { success: false; error: string }>;
 }
 
 declare global {

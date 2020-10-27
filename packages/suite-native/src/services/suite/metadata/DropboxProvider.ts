@@ -1,6 +1,7 @@
 import { AbstractMetadataProvider, Result } from '@suite-types/metadata';
 
 class DropboxProvider extends AbstractMetadataProvider {
+    isCloud = true;
     constructor(_token?: string) {
         super('dropbox');
     }
@@ -14,10 +15,10 @@ class DropboxProvider extends AbstractMetadataProvider {
     }
 
     // @ts-ignore
-    async getCredentials(): any {
-        const type = 'dropbox' as const;
+    async getProviderDetails(): any {
         return this.ok({
-            type,
+            type: this.type,
+            isCloud: this.isCloud,
             token: 'token',
             user: 'foo',
         });
