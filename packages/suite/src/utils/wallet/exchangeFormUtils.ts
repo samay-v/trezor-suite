@@ -15,11 +15,8 @@ export const getExternalComposeOutput = ({
 }: ComposeTransactionData) => {
     const formattedToken = isInvity ? invityApiSymbolToSymbol(token) : token;
     const tokenInfo = account.tokens?.find(t => t.symbol === formattedToken);
-    console.log('tokenInfo', tokenInfo);
     const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
-    console.log('decimals', decimals);
     const amountInSatoshi = amountToSatoshi(amount, decimals);
-    console.log('amountInSatoshi', amountInSatoshi);
     let output: ExternalOutput;
     if (isMaxActive) {
         if (address) {
