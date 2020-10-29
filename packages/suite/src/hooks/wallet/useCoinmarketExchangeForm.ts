@@ -1,6 +1,7 @@
 import { createContext, useContext, useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import TrezorConnect, { FeeLevel } from 'trezor-connect';
+import { invityApiSymbolToSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { toFiatCurrency, fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { PrecomposedLevels, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
@@ -152,6 +153,8 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     const compose = async (data: ComposeData) => {
         setIsComposing(true);
         const formValues = getValues();
+        const token =
+            data && data.token ? data.token : formValues.buyCryptoSelect.value || undefined;
         const feeLevel = feeInfo.levels.find(level => level.label === data.feeLevelLabel);
         const selectedFeeLevel =
             feeLevel || feeInfo.levels.find(level => level.label === selectedFee);
@@ -170,9 +173,13 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
             selectedFee,
             isMaxActive: data && data.setMax ? data.setMax || false : false,
             address: placeholderAddress,
-            token: data && data.token ? data.token : formValues.buyCryptoSelect.value || undefined,
+            token,
             isInvity: true,
         });
+
+        const formattedToken = invityApiSymbolToSymbol(token);
+        const tokenInfo = account.tokens?.find(t => t.symbol === formattedToken);
+        const tokenDecimals = tokenInfo ? tokenInfo.decimals : network.decimals;
 
         const transactionInfo = result ? result[selectedFeeLevel.label] : null;
         if (transactionInfo?.type === 'final') {
@@ -181,7 +188,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
                 let amountToFill = data.amount || '0';
                 if (data.setMax) {
                     amountToFill = new BigNumber(transactionInfo.max || '0').toFixed(
-                        network.decimals,
+                        tokenInfo ? tokenDecimals : network.decimals,
                     );
                 }
                 setValue('buyCryptoInput', amountToFill, { shouldValidate: true });
