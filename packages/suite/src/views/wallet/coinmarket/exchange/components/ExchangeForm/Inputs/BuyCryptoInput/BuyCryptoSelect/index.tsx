@@ -14,6 +14,10 @@ const Label = styled.div`
     padding-left: 10px;
 `;
 
+const getLabel = (tokenLabel: string) => {
+    return tokenLabel === 'USDT' ? 'USDT20': tokenLabel
+}
+
 const BuyCryptoSelect = () => {
     const {
         control,
@@ -33,7 +37,7 @@ const BuyCryptoSelect = () => {
             name={buyCryptoSelect}
             defaultValue={{
                 value: uppercaseSymbol,
-                label: uppercaseSymbol,
+                label: getLabel(uppercaseSymbol),
             }}
             render={({ onChange, value }) => {
                 return (
@@ -54,7 +58,7 @@ const BuyCryptoSelect = () => {
                             return (
                                 <Option>
                                     <CoinLogo size={18} symbol={account.symbol} />
-                                    <Label>{option.label}</Label>
+                                    <Label>{getLabel(option.label)}</Label>
                                 </Option>
                             );
                         }}
@@ -63,7 +67,7 @@ const BuyCryptoSelect = () => {
                         options={getSellCryptoOptions(account, exchangeInfo)}
                         isDropdownVisible={account.networkType === 'ethereum'}
                         isDisabled={account.networkType !== 'ethereum'}
-                        minWidth="70px"
+                        minWidth="80px"
                     />
                 );
             }}
