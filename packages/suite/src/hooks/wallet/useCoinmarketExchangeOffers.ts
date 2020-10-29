@@ -26,6 +26,7 @@ const getReceiveAccountSymbol = (
         }
         return symbol.toLowerCase();
     }
+
     return symbol;
 };
 

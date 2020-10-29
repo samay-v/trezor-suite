@@ -9,7 +9,10 @@ import { Translation } from '@suite-components';
 import BuyCryptoSelect from './BuyCryptoSelect';
 import { InputError } from '@wallet-components';
 import Bignumber from 'bignumber.js';
-import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
+import {
+    formatCryptoAmount,
+    invityApiSymbolToSymbol,
+} from '@wallet-utils/coinmarket/coinmarketUtils';
 
 export const buildCurrencyOptions = () => {
     const result: { value: string; label: string }[] = [];
@@ -42,7 +45,7 @@ const BuyCryptoInput = () => {
     const buyCryptoInput = 'buyCryptoInput';
     const fiatInput = 'fiatInput';
     const { symbol, tokens } = account;
-    const tokenData = tokens?.find(t => t.symbol === token);
+    const tokenData = tokens?.find(t => t.symbol === invityApiSymbolToSymbol(token));
     const formattedAvailableBalance = tokenData
         ? tokenData.balance || '0'
         : formatNetworkAmount(account.availableBalance, account.symbol);

@@ -15,8 +15,8 @@ const Label = styled.div`
 `;
 
 const getLabel = (tokenLabel: string) => {
-    return tokenLabel === 'USDT' ? 'USDT20': tokenLabel
-}
+    return tokenLabel === 'USDT' ? 'USDT20' : tokenLabel;
+};
 
 const BuyCryptoSelect = () => {
     const {
