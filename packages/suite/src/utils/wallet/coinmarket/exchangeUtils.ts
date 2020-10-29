@@ -124,3 +124,9 @@ export const getStatusMessage = (status: ExchangeTradeStatus) => {
             return 'TR_EXCHANGE_STATUS_CONFIRMING';
     }
 };
+
+export const formatLabel = (tokenLabel: string) => {
+    const lowerCaseLabel = tokenLabel.toLowerCase();
+    const label = lowerCaseLabel === 'usdt' ? 'usdt20' : tokenLabel;
+    return label.toUpperCase();
+};

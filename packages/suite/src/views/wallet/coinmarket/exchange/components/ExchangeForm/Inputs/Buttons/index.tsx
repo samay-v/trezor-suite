@@ -5,6 +5,7 @@ import { Translation } from '@suite-components';
 import styled from 'styled-components';
 import { invityApiSymbolToSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { useCoinmarketExchangeFormContext } from '@suite/hooks/wallet/useCoinmarketExchangeForm';
+import { formatLabel } from '@wallet-utils/coinmarket/exchangeUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -100,7 +101,7 @@ const Bottom = () => {
                 {tokenData && (
                     <TokenBalanceValue>
                         <Translation id="TOKEN_BALANCE" values={{ balance: tokenData.balance }} />
-                        {tokenData.symbol ? ` ${tokenData.symbol.toUpperCase()}` : ''}
+                        {tokenData.symbol ? ` ${formatLabel(tokenData.symbol)}` : ''}
                     </TokenBalanceValue>
                 )}
             </TokenBalance>

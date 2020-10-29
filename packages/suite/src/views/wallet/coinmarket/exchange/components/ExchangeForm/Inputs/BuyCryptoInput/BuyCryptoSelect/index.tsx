@@ -3,7 +3,7 @@ import React from 'react';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { getSellCryptoOptions } from '@wallet-utils/coinmarket/exchangeUtils';
+import { getSellCryptoOptions, formatLabel } from '@wallet-utils/coinmarket/exchangeUtils';
 
 const Option = styled.div`
     display: flex;
@@ -13,10 +13,6 @@ const Option = styled.div`
 const Label = styled.div`
     padding-left: 10px;
 `;
-
-const getLabel = (tokenLabel: string) => {
-    return tokenLabel === 'USDT' ? 'USDT20' : tokenLabel;
-};
 
 const BuyCryptoSelect = () => {
     const {
@@ -37,7 +33,7 @@ const BuyCryptoSelect = () => {
             name={buyCryptoSelect}
             defaultValue={{
                 value: uppercaseSymbol,
-                label: getLabel(uppercaseSymbol),
+                label: formatLabel(uppercaseSymbol),
             }}
             render={({ onChange, value }) => {
                 return (
@@ -58,7 +54,7 @@ const BuyCryptoSelect = () => {
                             return (
                                 <Option>
                                     <CoinLogo size={18} symbol={account.symbol} />
-                                    <Label>{getLabel(option.label)}</Label>
+                                    <Label>{formatLabel(option.label)}</Label>
                                 </Option>
                             );
                         }}
