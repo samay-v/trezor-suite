@@ -168,13 +168,11 @@ export const useOffers = (props: Props) => {
             extraField,
         });
         if (!response) {
-            console.log('invalid response', response);
             addNotification({
                 type: 'error',
                 error: 'No response from the server',
             });
         } else if (response.error || !response.status || !response.orderId) {
-            console.log('response error', response.error);
             addNotification({
                 type: 'error',
                 error: response.error || 'Invalid response from the server',

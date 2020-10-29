@@ -71,7 +71,6 @@ jest.mock('trezor-connect', () => {
             ethereumGetAddress: getAddress,
             rippleGetAddress: getAddress,
             composeTransaction: jest.fn(async _params => {
-                // console.warn('trezor-connect:', params);
                 if (!fixture) return { success: false, payload: { error: 'error' } };
                 const f = Array.isArray(fixture) ? fixture[fixtureIndex] : fixture;
                 fixtureIndex++;

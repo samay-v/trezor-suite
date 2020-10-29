@@ -132,13 +132,11 @@ export const useOffers = (props: Props) => {
         });
 
         if (!response || !response.trade || !response.trade.paymentId) {
-            console.log('invalid response', response);
             addNotification({
                 type: 'error',
                 error: 'No response from the server',
             });
         } else if (response.trade.error) {
-            console.log('response error', response.trade.error);
             addNotification({
                 type: 'error',
                 error: response.trade.error,
