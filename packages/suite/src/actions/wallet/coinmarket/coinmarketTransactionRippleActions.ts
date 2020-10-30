@@ -157,7 +157,7 @@ export const signTransaction = (data: SignTransactionData) => async (
 
     const payment: RipplePayment = {
         destination: data.address,
-        amount: networkAmountToSatoshi(data.amount, account.symbol),
+        amount: data.amount,
     };
 
     if (data.destinationTag) {
