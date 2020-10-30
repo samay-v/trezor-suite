@@ -200,7 +200,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         if (transactionInfo?.type === 'error') {
             setError('buyCryptoInput', {
                 type: 'compose',
-                message: transactionInfo.error.toLowerCase(),
+                message: transactionInfo.error,
             });
         }
 
