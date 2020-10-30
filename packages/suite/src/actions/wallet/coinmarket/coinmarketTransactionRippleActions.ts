@@ -8,7 +8,7 @@ import {
 import * as notificationActions from '@suite-actions/notificationActions';
 import { calculateTotal, calculateMax } from '@wallet-utils/sendFormUtils';
 import { getExternalComposeOutput } from '@wallet-utils/exchangeFormUtils';
-import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { XRP_FLAG } from '@wallet-constants/sendForm';
 import { PrecomposedLevels, PrecomposedTransaction, ExternalOutput } from '@wallet-types/sendForm';
 import { Dispatch, GetState } from '@suite-types';
@@ -170,7 +170,11 @@ export const signTransaction = (data: SignTransactionData) => async (
             ...data.transactionInfo,
             transaction: { ...data.transactionInfo.transaction, outputs: updatedOutputs },
         },
+        extraFields: {
+            destinationTag: data.destinationTag || undefined,
+        },
     };
+
     await dispatch(coinmarketCommonActions.saveTransactionReview(reviewData));
 
     const signedTx = await TrezorConnect.rippleSignTransaction({

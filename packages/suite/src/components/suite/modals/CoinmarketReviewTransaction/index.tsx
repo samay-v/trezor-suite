@@ -102,12 +102,12 @@ const CoinmarketReviewTransaction = ({ selectedAccount, reviewData, decision }: 
         // 2. fee
         // 3. output
         outputs.unshift({ type: 'fee', value: transactionInfo.fee });
-        // if (precomposedForm.rippleDestinationTag) {
-        //     outputs.unshift({
-        //         type: 'destination-tag',
-        //         value: precomposedForm.rippleDestinationTag,
-        //     });
-        // }
+        if (reviewData.extraFields?.destinationTag) {
+            outputs.unshift({
+                type: 'destination-tag',
+                value: reviewData.extraFields.destinationTag,
+            });
+        }
     } else {
         outputs.push({ type: 'fee', value: transactionInfo.fee });
     }

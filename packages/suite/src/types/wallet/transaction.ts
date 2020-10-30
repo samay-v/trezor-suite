@@ -34,4 +34,7 @@ export interface SignedTx {
 export interface ReviewTransactionData {
     signedTx: SignedTx | undefined;
     transactionInfo: PrecomposedTransactionFinal;
+    extraFields?: {
+        destinationTag?: string;
+    };
 }
