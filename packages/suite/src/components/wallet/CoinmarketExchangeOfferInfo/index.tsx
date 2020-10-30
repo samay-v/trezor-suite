@@ -69,6 +69,7 @@ const RightColumn = styled.div`
 const Row = styled.div`
     display: flex;
     margin: 20px 24px;
+    white-space: nowrap;
 `;
 
 const AdjacentRow = styled.div`

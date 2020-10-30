@@ -1,6 +1,11 @@
 import { Account } from '@wallet-types';
 
-const suiteToInvitySymbols = [{ suiteSymbol: 'usdt', invitySymbol: 'usdt20' }];
+const suiteToInvitySymbols = [
+    {
+        suiteSymbol: 'usdt',
+        invitySymbol: 'usdt20',
+    },
+];
 
 export const buildOption = (currency: string) => {
     return { value: currency, label: currency.toUpperCase() };
