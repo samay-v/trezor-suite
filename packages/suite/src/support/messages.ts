@@ -308,7 +308,7 @@ const definedMessages = defineMessages({
         id: 'TR_EXCHANGE_STATUS_CONVERTING',
     },
     TR_EXCHANGE_TRANS_ID: {
-        defaultMessage: 'trans. id:',
+        defaultMessage: 'Trans. ID:',
         id: 'TR_EXCHANGE_TRANS_ID',
     },
     TR_EXCHANGE_AGAIN: {
@@ -668,7 +668,7 @@ const definedMessages = defineMessages({
         id: 'TR_BUY_PROVIDER',
     },
     TR_BUY_TRANS_ID: {
-        defaultMessage: 'trans. id:',
+        defaultMessage: 'Trans. ID:',
         id: 'TR_BUY_TRANS_ID',
     },
     TR_BUY_RECEIVING_ADDRESS: {
