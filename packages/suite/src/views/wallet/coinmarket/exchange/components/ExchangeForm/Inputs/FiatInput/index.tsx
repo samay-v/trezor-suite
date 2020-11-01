@@ -22,6 +22,7 @@ const FiatInput = () => {
         formState,
         updateBuyCryptoValue,
         setMax,
+        setValue,
     } = useCoinmarketExchangeFormContext();
     const fiatInput = 'fiatInput';
 
@@ -32,8 +33,12 @@ const FiatInput = () => {
             }}
             onChange={event => {
                 setMax(false);
-                updateBuyCryptoValue(event.target.value, network.decimals);
-                clearErrors(fiatInput);
+                if (errors[fiatInput]) {
+                    setValue('buyCryptoInput', '');
+                } else {
+                    updateBuyCryptoValue(event.target.value, network.decimals);
+                    clearErrors(fiatInput);
+                }
             }}
             state={errors[fiatInput] ? 'error' : undefined}
             name={fiatInput}
@@ -45,6 +50,10 @@ const FiatInput = () => {
                             return <Translation id="TR_EXCHANGE_VALIDATION_ERROR_EMPTY" />;
                         }
                         return;
+
+                        if (value.isNaN()) {
+                            return 'AMOUNT_IS_NOT_NUMBER';
+                        }
                     }
 
                     if (!isDecimalsValid(value, 18)) {
