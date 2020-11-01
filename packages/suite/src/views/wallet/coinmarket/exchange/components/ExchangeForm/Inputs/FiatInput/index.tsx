@@ -44,7 +44,7 @@ const FiatInput = () => {
             name={fiatInput}
             noTopLabel
             innerRef={register({
-                validate: value => {
+                validate: (value: any) => {
                     if (!value) {
                         if (formState.isSubmitting) {
                             return <Translation id="TR_EXCHANGE_VALIDATION_ERROR_EMPTY" />;
