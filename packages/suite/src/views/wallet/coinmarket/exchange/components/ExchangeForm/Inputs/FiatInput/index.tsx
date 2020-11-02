@@ -6,6 +6,7 @@ import { isDecimalsValid } from '@wallet-utils/validation';
 import { useCoinmarketExchangeFormContext } from '@suite/hooks/wallet/useCoinmarketExchangeForm';
 import { Translation } from '@suite/components/suite';
 import FiatSelect from './FiatSelect';
+import BigNumber from 'bignumber.js';
 
 const StyledInput = styled(Input)`
     border-top-left-radius: 0;
@@ -45,18 +46,19 @@ const FiatInput = () => {
             noTopLabel
             innerRef={register({
                 validate: (value: any) => {
-                    if (!value) {
-                        if (formState.isSubmitting) {
-                            return <Translation id="TR_EXCHANGE_VALIDATION_ERROR_EMPTY" />;
+                    if (value) {
+                        const amountBig = new BigNumber(value);
+                        if (amountBig.isNaN()) {
+                            return 'AMOUNT_IS_NOT_NUMBER';
+                        }
+
+                        if (!isDecimalsValid(value, 18)) {
+                            return <Translation id="TR_EXCHANGE_VALIDATION_ERROR_NOT_NUMBER" />;
                         }
                     }
 
-                    if (value.isNaN()) {
-                        return 'AMOUNT_IS_NOT_NUMBER';
-                    }
-
-                    if (!isDecimalsValid(value, 18)) {
-                        return <Translation id="TR_EXCHANGE_VALIDATION_ERROR_NOT_NUMBER" />;
+                    if (formState.isSubmitting) {
+                        return <Translation id="TR_EXCHANGE_VALIDATION_ERROR_EMPTY" />;
                     }
                 },
             })}
