@@ -49,10 +49,10 @@ const FiatInput = () => {
                         if (formState.isSubmitting) {
                             return <Translation id="TR_EXCHANGE_VALIDATION_ERROR_EMPTY" />;
                         }
+                    }
 
-                        if (value.isNaN()) {
-                            return 'AMOUNT_IS_NOT_NUMBER';
-                        }
+                    if (value.isNaN()) {
+                        return 'AMOUNT_IS_NOT_NUMBER';
                     }
 
                     if (!isDecimalsValid(value, 18)) {
