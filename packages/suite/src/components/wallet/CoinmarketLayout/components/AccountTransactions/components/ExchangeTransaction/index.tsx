@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormattedDate } from 'react-intl';
-import { useSelector } from '@suite-hooks';
 import styled from 'styled-components';
-import { ExchangeProviderInfo, ExchangeTradeQuoteRequest } from 'invity-api';
+import { ExchangeProviderInfo } from 'invity-api';
 import { Button, colors, Icon, variables } from '@trezor/components';
 import { CoinmarketExchangeProviderInfo } from '@wallet-components';
 import { TradeExchange } from '@wallet-reducers/coinmarketReducer';
@@ -13,8 +12,6 @@ import { useWatchExchangeTrade } from '@wallet-hooks/useCoinmarket';
 import Status from '../Status';
 import { Translation } from '@suite/components/suite';
 import { useActions } from '@suite/hooks/suite';
-import invityAPI from '@suite-services/invityAPI';
-import { getStatusMessage, splitToFixedFloatQuotes } from '@wallet-utils/coinmarket/exchangeUtils';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 
 interface Props {
@@ -113,16 +110,13 @@ const Arrow = styled.div`
 
 const ExchangeTransaction = ({ trade, providers, account }: Props) => {
     const { goto } = useActions({ goto: routerActions.goto });
-    const { saveTransactionId, saveQuotes, saveQuoteRequest } = useActions({
+    const { saveTransactionId } = useActions({
         saveTransactionId: coinmarketExchangeActions.saveTransactionId,
-        saveQuotes: coinmarketExchangeActions.saveQuotes,
-        saveQuoteRequest: coinmarketExchangeActions.saveQuoteRequest,
     });
     useWatchExchangeTrade(account, trade);
-    const exchangeInfo = useSelector(state => state.wallet.coinmarket.exchange.exchangeInfo);
 
     const { date, data } = trade;
-    const { status, send, sendStringAmount, receive, receiveStringAmount, exchange } = data;
+    const { send, sendStringAmount, receive, receiveStringAmount, exchange } = data;
 
     const viewDetail = async () => {
         await saveTransactionId(trade.key || '');
