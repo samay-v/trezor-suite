@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable global-require */
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import coinmarketReducer from '@wallet-reducers/coinmarketReducer';
@@ -5,7 +7,11 @@ import coinmarketReducer from '@wallet-reducers/coinmarketReducer';
 import * as coinmarketCommonActions from '../coinmarketCommonActions';
 import { PrecomposedTransactionFinal } from '@suite/types/wallet/sendForm';
 import { ReviewTransactionData } from '@suite/types/wallet/transaction';
-import { DEFAULT_STORE, VERIFY_ADDRESS_FIXTURES } from '../__fixtures__/coinmarketCommonActions';
+import {
+    COMPOSE_TRANSACTION_FIXTURES,
+    DEFAULT_STORE,
+    VERIFY_ADDRESS_FIXTURES,
+} from '../__fixtures__/coinmarketCommonActions';
 
 export const getInitialState = (initial = {}) => {
     return {
@@ -56,6 +62,13 @@ jest.mock('trezor-connect', () => {
             },
         };
     };
+    const getNextFixture = () => {
+        if (!fixture) return { success: false, payload: { error: 'error' } };
+        const f = Array.isArray(fixture) ? fixture[fixtureIndex] : fixture;
+        fixtureIndex++;
+        if (!f) return { success: false, payload: { error: 'error' } };
+        return f.response;
+    };
     return {
         __esModule: true, // this property makes it work
         default: {
@@ -71,15 +84,11 @@ jest.mock('trezor-connect', () => {
             ethereumGetAddress: getAddress,
             rippleGetAddress: getAddress,
             composeTransaction: jest.fn(async _params => {
-                if (!fixture) return { success: false, payload: { error: 'error' } };
-                const f = Array.isArray(fixture) ? fixture[fixtureIndex] : fixture;
-                fixtureIndex++;
-                if (!f) return { success: false, payload: { error: 'error' } };
-                if (typeof f.delay === 'number') {
-                    await new Promise(resolve => setTimeout(resolve, f.delay));
-                }
-                return f.response;
+                return getNextFixture();
             }),
+            blockchainEstimateFee: () => {
+                return getNextFixture();
+            },
         },
         setTestFixtures: (f: any) => {
             fixture = f;
@@ -115,6 +124,21 @@ describe('Coinmarket Common Actions', () => {
                     ? store.getState().wallet.coinmarket.exchange.addressVerified
                     : store.getState().wallet.coinmarket.buy.addressVerified,
             ).toEqual(f.result.value);
+            if (f.result && f.result.actions) {
+                expect(store.getActions()).toMatchObject(f.result.actions);
+            }
+        });
+    });
+
+    COMPOSE_TRANSACTION_FIXTURES.forEach(f => {
+        it(f.description, async () => {
+            const store = initStore(getInitialState(f.initialState));
+            require('trezor-connect').setTestFixtures(f.connect);
+
+            const result = await store.dispatch(
+                coinmarketCommonActions.composeTransaction(f.params.data),
+            );
+            expect(result).toEqual(f.result.value);
             if (f.result && f.result.actions) {
                 expect(store.getActions()).toMatchObject(f.result.actions);
             }
