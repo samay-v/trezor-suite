@@ -198,9 +198,13 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         }
 
         if (transactionInfo?.type === 'error') {
+            let { error } = transactionInfo;
+            if (error === 'NOT-ENOUGH-FUNDS') {
+                error = 'AMOUNT_IS_NOT_ENOUGH';
+            }
             setError('buyCryptoInput', {
                 type: 'compose',
-                message: transactionInfo.error,
+                message: error,
             });
         }
 
