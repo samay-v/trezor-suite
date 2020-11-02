@@ -191,20 +191,9 @@ const ExchangeTransaction = ({ trade, providers, account }: Props) => {
                 </Row>
             </ProviderColumn>
             <BuyColumn>
-                {statusMessage === 'TR_EXCHANGE_STATUS_SUCCESS' ? (
-                    <Button
-                        variant="tertiary"
-                        onClick={getOffers}
-                        isLoading={isGettingOffers}
-                        isDisabled={isGettingOffers}
-                    >
-                        <Translation id="TR_EXCHANGE_AGAIN" />
-                    </Button>
-                ) : (
-                    <Button variant="tertiary" onClick={viewDetail}>
-                        <Translation id="TR_EXCHANGE_VIEW_DETAILS" />
-                    </Button>
-                )}
+                <Button variant="tertiary" onClick={viewDetail}>
+                    <Translation id="TR_EXCHANGE_VIEW_DETAILS" />
+                </Button>
             </BuyColumn>
         </Wrapper>
     );
