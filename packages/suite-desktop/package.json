@@ -34,8 +34,9 @@
         },
         "files": [
             "build/**/*",
-            "!build/static/bridge/**/*",
-            "dist/*.js",
+            "!build/static/bin/**/*",
+            "dist/**/*.js",
+            "!dist/__**",
             "package.json"
         ],
         "extraResources": [
@@ -76,15 +77,12 @@
             ],
             "extraResources": [
                 {
-                    "from": "build/static/bridge",
-                    "to": "bridge",
-                    "filter": [
-                        "**/trezord-mac-x64"
-                    ]
+                    "from": "build/static/bin/bridge/mac-x64",
+                    "to": "bin/bridge"
                 },
                 {
-                    "from": "build/static/tor/mac-x64",
-                    "to": "tor"
+                    "from": "build/static/bin/tor/mac-x64",
+                    "to": "bin/tor"
                 }
             ],
             "icon": "build/static/images/icons/512x512.icns",
@@ -102,15 +100,12 @@
         "win": {
             "extraResources": [
                 {
-                    "from": "build/static/bridge",
-                    "to": "bridge",
-                    "filter": [
-                        "**/trezord-win-x64.exe"
-                    ]
+                    "from": "build/static/bin/bridge/win-x64",
+                    "to": "bin/bridge"
                 },
                 {
-                    "from": "build/static/tor/win-x64",
-                    "to": "tor"
+                    "from": "build/static/bin/tor/win-x64",
+                    "to": "bin/tor"
                 }
             ],
             "icon": "build/static/images/icons/512x512.png",
@@ -122,15 +117,12 @@
         "linux": {
             "extraResources": [
                 {
-                    "from": "build/static/bridge",
-                    "to": "bridge",
-                    "filter": [
-                        "**/trezord-linux-x64"
-                    ]
+                    "from": "build/static/bin/bridge/linux-x64",
+                    "to": "bin/bridge"
                 },
                 {
-                    "from": "build/static/tor/linux-x64",
-                    "to": "tor"
+                    "from": "build/static/bin/tor/linux-x64",
+                    "to": "bin/tor"
                 }
             ],
             "icon": "build/static/images/icons/512x512.png",
@@ -149,8 +141,7 @@
         "electron-next": "^3.1.5",
         "electron-store": "^5.1.1",
         "electron-updater": "^4.3.5",
-        "os": "^0.1.1",
-        "ps-list": "6.3.0"
+        "node-fetch": "^2.6.1"
     },
     "devDependencies": {
         "@sentry/browser": "^5.16.0",

@@ -39,11 +39,13 @@ const TransactionCount = styled.div`
 `;
 
 const AccountTransactions = () => {
-    const allTransactions = useSelector(state => state.wallet.coinmarket.trades);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const buyProviders = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.providerInfos);
-    const exchangeProviders = useSelector(
-        state => state.wallet.coinmarket.exchange.exchangeInfo?.providerInfos,
+    const { selectedAccount, allTransactions, buyProviders, exchangeProviders } = useSelector(
+        state => ({
+            selectedAccount: state.wallet.selectedAccount,
+            allTransactions: state.wallet.coinmarket.trades,
+            buyProviders: state.wallet.coinmarket.buy.buyInfo?.providerInfos,
+            exchangeProviders: state.wallet.coinmarket.exchange.exchangeInfo?.providerInfos,
+        }),
     );
 
     if (selectedAccount.status !== 'loaded') {

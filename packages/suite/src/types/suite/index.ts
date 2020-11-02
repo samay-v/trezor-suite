@@ -9,8 +9,8 @@ import {
     UnknownDevice as UnknownDeviceBase,
 } from 'trezor-connect';
 import { RouterActions } from '@suite-actions/routerActions';
-import { Route as Route$ } from '@suite-constants/routes';
-import { AppState as AppState$ } from '@suite/reducers/store';
+import { Route } from '@suite-constants/routes';
+import { AppState } from '@suite/reducers/store';
 import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
 import { ResizeActions } from '@suite-actions/resizeActions';
@@ -24,7 +24,6 @@ import { DeviceMetadata } from '@suite-types/metadata';
 import { OnboardingActions } from '@onboarding-types';
 import { SettingsActions } from '@settings-types';
 import { FirmwareActions } from '@firmware-types';
-import { ExtendedMessageDescriptor as ExtendedMessageDescriptor$ } from '@suite-components/Translation/components/BaseTranslation';
 import { WalletAction } from '@wallet-types';
 import { BackupActions } from '@backup-actions/backupActions';
 import { RecoveryActions } from '@recovery-actions/recoveryActions';
@@ -32,14 +31,12 @@ import { ObjectValues } from '@suite/types/utils';
 import { SUITE } from '@suite-actions/constants';
 import { PROCESS_MODE } from '@suite-middlewares/actionBlockerMiddleware';
 
-// this weird export is because of --isolatedModules and next.js 9
-export type ExtendedMessageDescriptor = ExtendedMessageDescriptor$;
+// reexport
+export type { ExtendedMessageDescriptor } from '@suite-components/Translation/components/BaseTranslation';
+export type { AppState } from '@suite/reducers/store';
+export type { Route } from '@suite-constants/routes';
 
 type TrezorConnectEvents = TransportEvent | UiEvent | DeviceEvent | BlockchainEvent;
-
-export type AppState = AppState$;
-
-export type Route = Route$;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =
@@ -73,6 +70,7 @@ export interface ExtendedDevice {
     useEmptyPassphrase: boolean;
     passphraseOnDevice?: boolean;
     remember?: boolean; // device should be remembered
+    forceRemember?: true; // device was forced to be remembered
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
     authConfirm?: boolean; // device cannot be used because passphrase was not confirmed
@@ -99,7 +97,7 @@ export type InjectedModalApplicationProps = {
     cancelable: boolean;
     onCancel: () => void;
     closeModalApp: (preserveParams?: boolean) => void;
-    getBackgroundRoute: () => Route$ | typeof undefined;
+    getBackgroundRoute: () => Route | typeof undefined;
 };
 
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error';

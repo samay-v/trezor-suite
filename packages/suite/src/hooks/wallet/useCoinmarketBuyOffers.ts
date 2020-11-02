@@ -6,11 +6,7 @@ import { processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as routerActions from '@suite-actions/routerActions';
-import {
-    createQuoteLink,
-    submitRequestForm,
-    createTxLink,
-} from '@suite/utils/wallet/coinmarket/buyUtils';
+import { createQuoteLink, createTxLink } from '@suite/utils/wallet/coinmarket/buyUtils';
 import { Props, ContextValues } from '@wallet-types/coinmarketBuyOffers';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { isDesktop } from '@suite-utils/env';
@@ -35,20 +31,24 @@ export const useOffers = (props: Props) => {
         alternativeQuotes,
     );
     const [lastFetchDate, setLastFetchDate] = useState(new Date());
-    const { goto } = useActions({ goto: routerActions.goto });
-    const { verifyAddress } = useActions({ verifyAddress: coinmarketCommonActions.verifyAddress });
     const {
         saveTrade,
         setIsFromRedirect,
         openCoinmarketBuyConfirmModal,
         addNotification,
         saveTransactionDetailId,
+        verifyAddress,
+        submitRequestForm,
+        goto,
     } = useActions({
         saveTrade: coinmarketBuyActions.saveTrade,
         setIsFromRedirect: coinmarketBuyActions.setIsFromRedirect,
         openCoinmarketBuyConfirmModal: coinmarketBuyActions.openCoinmarketBuyConfirmModal,
         addNotification: notificationActions.addToast,
         saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
+        verifyAddress: coinmarketCommonActions.verifyAddress,
+        submitRequestForm: coinmarketCommonActions.submitRequestForm,
+        goto: routerActions.goto,
     });
 
     const invityAPIUrl = useSelector(state => state.suite.settings.debug.invityAPIUrl);
@@ -102,7 +102,7 @@ export const useOffers = (props: Props) => {
                     });
                     if (response) {
                         if (response.trade.status === 'LOGIN_REQUEST' && response.tradeForm) {
-                            submitRequestForm(response.tradeForm);
+                            await submitRequestForm(response.tradeForm);
                         } else {
                             const errorMessage = `[doBuyTrade] ${response.trade.status} ${response.trade.error}`;
                             console.log(errorMessage);
@@ -144,7 +144,7 @@ export const useOffers = (props: Props) => {
         } else {
             await saveTrade(response.trade, account, new Date().toISOString());
             if (response.tradeForm) {
-                submitRequestForm(response.tradeForm);
+                await submitRequestForm(response.tradeForm);
             }
             if (isDesktop()) {
                 await saveTransactionDetailId(response.trade.paymentId);

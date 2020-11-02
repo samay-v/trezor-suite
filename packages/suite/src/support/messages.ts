@@ -136,6 +136,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
     },
+    TR_ADD_HIDDEN_WALLET: {
+        defaultMessage: 'Add hidden wallet',
+        id: 'TR_ADD_HIDDEN_WALLET',
+    },
     TR_ADD_WALLET: {
         defaultMessage: 'Add wallet',
         id: 'TR_ADD_WALLET',
@@ -781,6 +785,34 @@ const definedMessages = defineMessages({
         defaultMessage: '{accountLabel} public key (XPUB)',
         id: 'TR_XPUB_MODAL_TITLE_METADATA',
         description: 'accountLabel is user defined name of account, might be pretty much anything.',
+    },
+    TR_IMPORT_CSV_MODAL_TITLE: {
+        defaultMessage: 'Import addresses from CSV',
+        id: 'TR_IMPORT_CSV_MODAL_TITLE',
+    },
+    TR_IMPORT_CSV_MODAL_SHOW_EXAMPLE: {
+        defaultMessage: 'Show CSV example',
+        id: 'TR_IMPORT_CSV_MODAL_SHOW_EXAMPLE',
+    },
+    TR_IMPORT_CSV_MODAL_HIDE_EXAMPLE: {
+        defaultMessage: 'Hide example',
+        id: 'TR_IMPORT_CSV_MODAL_HIDE_EXAMPLE',
+    },
+    TR_IMPORT_CSV_MODAL_DELIMITER_DEFAULT: {
+        defaultMessage: 'Auto detect delimiter',
+        id: 'TR_IMPORT_CSV_MODAL_DELIMITER_DEFAULT',
+    },
+    TR_IMPORT_CSV_MODAL_DELIMITER_CUSTOM: {
+        defaultMessage: 'Custom delimiter',
+        id: 'TR_IMPORT_CSV_MODAL_DELIMITER_CUSTOM',
+    },
+    TR_DROPZONE: {
+        defaultMessage: 'Drag and drop file here or click to select from files',
+        id: 'TR_DROPZONE',
+    },
+    TR_DROPZONE_ERROR: {
+        defaultMessage: 'Import failed {error}',
+        id: 'TR_DROPZONE_ERROR',
     },
     TR_ADVANCED_RECOVERY: {
         defaultMessage: 'advanced recovery',
@@ -3324,7 +3356,7 @@ const definedMessages = defineMessages({
         defaultMessage: 'SEPA',
     },
     TR_PAYMENT_METHOD_GIROPAY: {
-        id: 'TR_PAYMENT_METHOD_CREDITCARD',
+        id: 'TR_PAYMENT_METHOD_GIROPAY',
         defaultMessage: 'giropay',
     },
     TR_PAYMENT_METHOD_EPS: {
@@ -4066,6 +4098,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'Unsupported address format. {TR_LEARN_MORE}',
         id: 'RECIPIENT_FORMAT_DEPRECATED',
     },
+    RECIPIENT_FORMAT_UPPERCASE: {
+        defaultMessage: 'Unsupported address format. {convert}',
+        id: 'RECIPIENT_FORMAT_UPPERCASE',
+    },
+    RECIPIENT_FORMAT_UPPERCASE_CONVERT: {
+        defaultMessage: 'Convert to lowercase',
+        id: 'RECIPIENT_FORMAT_UPPERCASE_CONVERT',
+    },
     RECIPIENT_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',
         id: 'RECIPIENT_CANNOT_SEND_TO_MYSELF',
@@ -4124,7 +4164,8 @@ const definedMessages = defineMessages({
     },
     OP_RETURN_ADD: {
         id: 'OP_RETURN_ADD',
-        defaultMessage: 'ADD OP RETURN',
+        description: 'item in dropdown menu',
+        defaultMessage: 'Add OP Return',
     },
     RBF: {
         id: 'RBF',
@@ -4272,6 +4313,11 @@ const definedMessages = defineMessages({
         description: 'Sign and send button used in send form',
         defaultMessage: 'Review & Send',
     },
+    SEND_RAW: {
+        id: 'SEND_RAW',
+        description: 'item in dropdown menu',
+        defaultMessage: 'Send RAW',
+    },
     SEND_RAW_TRANSACTION: {
         id: 'SEND_RAW_TRANSACTION',
         description: 'Send raw form header',
@@ -4325,6 +4371,11 @@ const definedMessages = defineMessages({
     BROADCAST: {
         id: 'BROADCAST',
         defaultMessage: 'Broadcast',
+    },
+    IMPORT_CSV: {
+        id: 'IMPORT_CSV',
+        description: 'item in dropdown menu',
+        defaultMessage: 'Import',
     },
     // Send form end
 
@@ -4875,6 +4926,11 @@ const definedMessages = defineMessages({
     TR_SUITE_WEB_LANDING_MACOS_LABEL: {
         id: 'TR_SUITE_WEB_LANDING_MACOS_LABEL',
         defaultMessage: 'for MacOS',
+    },
+    TR_BITCOIN_CASH_15_NOV_FORK: {
+        id: 'TR_BITCOIN_CASH_15_NOV_FORK',
+        defaultMessage:
+            'Bitcoin Cash will undergo a contentious fork on the 15th of November 2020, which could cause a split in the network. Read our blogpost to understand the risks!',
     },
 } as const);
 

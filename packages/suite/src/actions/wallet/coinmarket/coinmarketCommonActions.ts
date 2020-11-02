@@ -15,10 +15,14 @@ import * as transactionBitcoinActions from './coinmarketTransactionBitcoinAction
 import * as transactionEthereumActions from './coinmarketTransactionEthereumActions';
 import * as transactionRippleActions from './coinmarketTransactionRippleActions';
 import * as modalActions from '@suite-actions/modalActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 import { COINMARKET_BUY, COINMARKET_EXCHANGE, COINMARKET_COMMON } from '../constants';
 import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { Account } from '@wallet-types';
+import { BuyTradeFormResponse } from 'invity-api';
+import { submitRequestForm as utilsSubmitRequestForm } from '@wallet-utils/coinmarket/buyUtils';
+import { isDesktop } from '@suite/utils/suite/env';
 
 export type CoinmarketCommonActions =
     | { type: typeof COINMARKET_COMMON.SAVE_TRANSACTION_REVIEW; reviewData: ReviewTransactionData }
@@ -114,6 +118,17 @@ export const verifyAddress = (account: Account, inExchange = false) => async (
             }),
         );
     }
+};
+
+export const submitRequestForm = (tradeForm: BuyTradeFormResponse) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { device } = getState().suite;
+    if (device && !device.remember && !isDesktop()) {
+        dispatch(suiteActions.rememberDevice(device, true));
+    }
+    utilsSubmitRequestForm(tradeForm);
 };
 
 export const saveComposedTransaction = (composedTransaction: PrecomposedTransactionFinal) => async (

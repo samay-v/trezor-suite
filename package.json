@@ -5,7 +5,7 @@
     "repository": "https://github.com/trezor/trezor-suite.git",
     "license": "SEE LICENSE IN LICENSE.md",
     "engines": {
-        "node": ">=11",
+        "node": ">=12",
         "yarn": ">=1.22.0"
     },
     "workspaces": {
@@ -66,6 +66,6 @@
         "rimraf": "^3.0.2",
         "ts-jest": "^26.4.0",
         "babel-jest": "^26.3.0",
-        "typescript": "^4.0.3"
+        "typescript": "^4.0.5"
     }
 }

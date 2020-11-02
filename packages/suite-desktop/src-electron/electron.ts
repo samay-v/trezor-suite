@@ -7,18 +7,18 @@ import * as url from 'url';
 import * as electronLocalshortcut from 'electron-localshortcut';
 import * as config from './config';
 import * as store from './store';
-import { runBridgeProcess } from './bridge';
 import { buildMainMenu } from './menu';
 import { HttpReceiver } from './http-receiver';
 import * as metadata from './metadata';
 import { buyRedirectHandler } from './buy';
+import { RESOURCES } from './constants';
 
-const httpReceiver = new HttpReceiver();
+import BridgeProcess from './processes/BridgeProcess';
 
+let initRun = false;
 let mainWindow: BrowserWindow;
 const APP_NAME = 'Trezor Suite';
 const PROTOCOL = 'file';
-const res = isDev ? './public/static' : process.resourcesPath;
 const src = isDev
     ? 'http://localhost:8000/'
     : url.format({
@@ -33,6 +33,12 @@ const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
 
 // Updater
 const updateCancellationToken = new CancellationToken();
+
+// External request handler
+const httpReceiver = new HttpReceiver();
+
+// Processes
+const bridge = new BridgeProcess();
 
 const registerShortcuts = (window: BrowserWindow) => {
     // internally uses before-input-event, which should be safer than adding globalShortcut and removing it on blur event
@@ -66,16 +72,21 @@ const notifyWindowMaximized = (window: BrowserWindow) => {
     );
 };
 
+// notify client with window active state
+const notifyWindowActive = (window: BrowserWindow, state: boolean) => {
+    window.webContents.send('window/is-active', state);
+};
+
 const init = async () => {
     try {
-        // TODO: not necessary since suite will send a request to start bridge via IPC
-        // but right now removing it causes showing the download bridge modal for a sec
-        await runBridgeProcess();
-    } catch (error) {
-        // do nothing
+        await bridge.start();
+    } catch {
+        //
     }
 
-    if (isDev) {
+    // On Mac, "init" is called again when the window is opened again. For this we need
+    // to check if init has already run.
+    if (isDev && !initRun) {
         await prepareNext(path.resolve(__dirname, '../'));
     }
 
@@ -96,7 +107,7 @@ const init = async () => {
             enableRemoteModule: false,
             preload: path.join(__dirname, 'preload.js'),
         },
-        icon: path.join(res, 'images', 'icons', '512x512.png'),
+        icon: path.join(RESOURCES, 'images', 'icons', '512x512.png'),
     });
 
     // Security warnings
@@ -111,15 +122,6 @@ const init = async () => {
 
     Menu.setApplicationMenu(buildMainMenu());
     mainWindow.setMenuBarVisibility(false);
-
-    if (process.platform === 'darwin') {
-        // On OS X it is common for applications and their menu bar
-        // to stay active until the user quits explicitly with Cmd + Q (onBeforeQuit = true)
-        mainWindow.on('close', event => {
-            event.preventDefault();
-            mainWindow.hide();
-        });
-    }
 
     // open external links in default browser
     const handleExternalLink = (event: Event, url: string) => {
@@ -230,6 +232,12 @@ const init = async () => {
     mainWindow.on('moved', () => {
         notifyWindowMaximized(mainWindow);
     });
+    mainWindow.on('focus', () => {
+        notifyWindowActive(mainWindow, true);
+    });
+    mainWindow.on('blur', () => {
+        notifyWindowActive(mainWindow, false);
+    });
 
     httpReceiver.start();
 
@@ -295,16 +303,20 @@ const init = async () => {
         updateSettings.skipVersion = version;
         store.setUpdateSettings(updateSettings);
     });
+
+    // Init ran
+    initRun = true;
 };
 
 app.name = APP_NAME; // overrides @trezor/suite-desktop app name in menu
 app.on('ready', init);
 
-// Quit when all windows are closed.
 app.on('window-all-closed', () => {
-    app.quit();
-    // @ts-ignore
-    mainWindow = undefined;
+    // On macOS it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
 });
 
 app.on('before-quit', () => {
@@ -314,9 +326,8 @@ app.on('before-quit', () => {
         // store window bounds
         store.setWinBounds(mainWindow);
 
-        // TODO: be aware that although it kills the bridge process, another one will start because of bridge/start msgs from ipc
-        // (BridgeStatus component sends the request every time it loses transport.type)
-        // killBridgeProcess();
+        //
+        bridge.stop();
     }
 });
 
@@ -333,10 +344,10 @@ app.on('will-quit', () => {
 app.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (mainWindow) {
-        mainWindow.show();
-    } else {
+    if (process.platform === 'darwin') {
         init();
+    } else {
+        mainWindow.show();
     }
 });
 
@@ -348,7 +359,11 @@ app.on('browser-window-focus', (_event, win) => {
 
 ipcMain.on('bridge/start', async (_event, devMode?: boolean) => {
     try {
-        await runBridgeProcess(devMode);
+        if (devMode) {
+            await bridge.startDev();
+        } else {
+            await bridge.start();
+        }
     } catch (error) {
         // TODO: return error message to suite?
     }
@@ -372,9 +387,9 @@ httpReceiver.on('server/listening', () => {
     });
 
     // when httpReceiver was asked to provide current address for given pathname
-    ipcMain.on('server/request-address', (_event, pathname) => {
-        mainWindow.webContents.send('server/address', httpReceiver.getRouteAddress(pathname));
-    });
+    ipcMain.handle('server/request-address', (_event, pathname) =>
+        httpReceiver.getRouteAddress(pathname),
+    );
 });
 
 metadata.init();

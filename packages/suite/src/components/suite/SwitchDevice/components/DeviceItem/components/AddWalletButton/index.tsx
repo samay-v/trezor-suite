@@ -39,7 +39,7 @@ interface Props {
 
 const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceInstance }: Props) => {
     const hasAtLeastOneWallet = instances.find(d => d.state);
-    const tooltipMsg = <Translation id="TR_TO_ACCESS_OTHER_WALLETS" />;
+    const emptyPassphraseWalletExists = instances.find(d => d.useEmptyPassphrase); // Find a "standard wallet" among user's wallet instances. If no such wallet is found, the variable is undefined.
     const locks = useSelector(state => state.suite.locks);
 
     // opportunity to bring useDeviceLocks back (extract it from useDevice hook)?
@@ -52,25 +52,38 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
         locks.includes(SUITE.LOCK_TYPE.UI);
 
     const analytics = useAnalytics();
+
+    const onAddWallet = () => {
+        if (hasAtLeastOneWallet) {
+            addDeviceInstance(device);
+        } else {
+            selectDeviceInstance(instances[0]);
+        }
+        analytics.report({
+            type: 'switch-device/add-wallet',
+        });
+    };
+
     return (
         <AddWallet>
-            <StyledTooltip enabled={!device.connected} placement="top" content={tooltipMsg}>
+            <StyledTooltip
+                enabled={!device.connected}
+                placement="top"
+                content={<Translation id="TR_TO_ACCESS_OTHER_WALLETS" />}
+            >
                 <StyledButton
                     data-test="@switch-device/add-wallet-button"
                     variant="tertiary"
                     fullWidth
                     icon="PLUS"
                     isDisabled={isLocked}
-                    onClick={() =>
-                        hasAtLeastOneWallet
-                            ? addDeviceInstance(device)
-                            : selectDeviceInstance(instances[0]) &&
-                              analytics.report({
-                                  type: 'switch-device/add-wallet',
-                              })
-                    }
+                    onClick={onAddWallet}
                 >
-                    <Translation id="TR_ADD_WALLET" />
+                    {emptyPassphraseWalletExists ? (
+                        <Translation id="TR_ADD_HIDDEN_WALLET" />
+                    ) : (
+                        <Translation id="TR_ADD_WALLET" />
+                    )}
                 </StyledButton>
             </StyledTooltip>
         </AddWallet>

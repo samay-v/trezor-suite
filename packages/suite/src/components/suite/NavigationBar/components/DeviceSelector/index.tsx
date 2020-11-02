@@ -84,8 +84,10 @@ const needsRefresh = (device?: TrezorDevice) => {
 };
 
 const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
-    const selectedDevice = useSelector(state => state.suite.device);
-    const deviceCount = useSelector(state => state.devices).length;
+    const { selectedDevice, deviceCount } = useSelector(state => ({
+        selectedDevice: state.suite.device,
+        deviceCount: state.devices.length,
+    }));
     const { goto, acquireDevice } = useActions({
         goto: routerActions.goto,
         acquireDevice: suiteActions.acquireDevice,
@@ -93,6 +95,7 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
 
     const [localCount, setLocalCount] = useState<number | null>(null);
     const [triggerAnim, setTriggerAnim] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
 
     const countChanged = localCount && localCount !== deviceCount;
     const timerRef = useRef<number | undefined>(undefined);
@@ -127,6 +130,8 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
 
     return (
         <Wrapper
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
             data-test="@menu/switch-device"
             onClick={() =>
                 goto('suite-switch-device', {
@@ -156,6 +161,8 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
                         </WalletNameWrapper>
                     </DeviceDetail>
                     <DeviceStatus
+                        showTextStatus={isHovered}
+                        showIconStatus={!isHovered}
                         device={selectedDevice}
                         onRefreshClick={
                             deviceNeedsRefresh
