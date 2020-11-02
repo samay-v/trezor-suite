@@ -118,32 +118,11 @@ const ExchangeTransaction = ({ trade, providers, account }: Props) => {
         saveQuotes: coinmarketExchangeActions.saveQuotes,
         saveQuoteRequest: coinmarketExchangeActions.saveQuoteRequest,
     });
-    const [isGettingOffers, setIsGettingOffers] = useState(false);
     useWatchExchangeTrade(account, trade);
     const exchangeInfo = useSelector(state => state.wallet.coinmarket.exchange.exchangeInfo);
 
     const { date, data } = trade;
     const { status, send, sendStringAmount, receive, receiveStringAmount, exchange } = data;
-
-    const statusMessage = getStatusMessage(status || 'CONFIRMING');
-
-    const getOffers = async () => {
-        setIsGettingOffers(true);
-        const request: ExchangeTradeQuoteRequest = {
-            receive: receive || '',
-            send: send || '',
-            sendStringAmount: sendStringAmount || '',
-        };
-        await saveQuoteRequest(request);
-        const allQuotes = await invityAPI.getExchangeQuotes(request);
-        const [fixed, float] = splitToFixedFloatQuotes(allQuotes, exchangeInfo);
-        await saveQuotes(fixed, float);
-        goto('wallet-coinmarket-exchange-offers', {
-            symbol: account.symbol,
-            accountIndex: account.index,
-            accountType: account.accountType,
-        });
-    };
 
     const viewDetail = async () => {
         await saveTransactionId(trade.key || '');
