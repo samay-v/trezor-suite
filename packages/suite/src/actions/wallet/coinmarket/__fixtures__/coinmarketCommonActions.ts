@@ -72,9 +72,9 @@ export const ETH_ACCOUNT: Account = {
     path: "m/44'/60'/0'/0/0",
     empty: true,
     visible: true,
-    balance: '12340000',
-    availableBalance: '12340000',
-    formattedBalance: '0',
+    balance: '408873828678601000',
+    availableBalance: '408873828678601000',
+    formattedBalance: '0.408873828678601',
     tokens: [],
     addresses: {
         change: [],
@@ -466,51 +466,66 @@ export const COMPOSE_TRANSACTION_FIXTURES = [
             ],
         },
     },
-    // {
-    //     description: 'composeTransaction, ethereum account, normal',
-    //     initialState: {
-    //         suite: {
-    //             device: AVAILABLE_DEVICE,
-    //         },
-    //     },
-    //     params: {
-    //         data: <ComposeTransactionData>{
-    //             account: ETH_ACCOUNT,
-    //             amount: '0.1234',
-    //             feeInfo: {
-    //                 blockHeight: 50000,
-    //                 blockTime: 3,
-    //                 minFee: 1,
-    //                 maxFee: 40000,
-    //                 levels: [{ label: 'normal', feePerUnit: '2', blocks: 0 }],
-    //             },
-    //             feePerUnit: '1',
-    //             feeLimit: '0',
-    //             network: NETWORKS.find(n => n.symbol === 'eth'),
-    //             minFee: '1',
-    //             selectedFee: 'normal',
-    //             ethereumDataHex: '0x1212',
-    //             isMaxActive: false,
-    //             isInvity: true,
-    //         },
-    //     },
-    //     connect: [
-    //         {
-    //             response: {
-    //                 success: true,
-    //                 payload: { levels: [{ feeLimit: '1234' }] },
-    //             },
-    //         },
-    //         {
-    //             response: {
-    //                 success: true,
-    //                 payload: [{ type: 'nonfinal', totalSpent: '10000000', feePerByte: '2' }],
-    //             },
-    //         },
-    //     ],
-    //     result: {
-    //         value: { custom: { type: 'nonfinal', totalSpent: '10000000', feePerByte: '2' } },
-    //         actions: [],
-    //     },
-    // },
+    {
+        description: 'composeTransaction, ethereum account, normal',
+        initialState: {
+            suite: {
+                device: AVAILABLE_DEVICE,
+            },
+        },
+        params: {
+            data: <ComposeTransactionData>{
+                account: ETH_ACCOUNT,
+                amount: '0.1234',
+                feeInfo: {
+                    blockHeight: 50000,
+                    blockTime: 3,
+                    minFee: 1,
+                    maxFee: 40000,
+                    levels: [
+                        {
+                            label: 'normal',
+                            feePerUnit: '2',
+                            blocks: 0,
+                        },
+                    ],
+                },
+                feePerUnit: '1',
+                feeLimit: '0',
+                network: NETWORKS.find(n => n.symbol === 'eth'),
+                minFee: '1',
+                selectedFee: 'normal',
+                ethereumDataHex: '0x1212',
+                isMaxActive: false,
+                isInvity: true,
+            },
+        },
+        connect: [
+            {
+                response: {
+                    success: true,
+                    payload: { levels: [{ feeLimit: '1234' }] },
+                },
+            },
+            {
+                response: {
+                    success: true,
+                    payload: [{ type: 'nonfinal', totalSpent: '10000000', feePerByte: '2' }],
+                },
+            },
+        ],
+        result: {
+            value: {
+                normal: {
+                    type: 'nonfinal',
+                    totalSpent: '123402468000000000',
+                    feePerByte: '2',
+                    bytes: 0,
+                    fee: '2468000000000',
+                    feeLimit: '1234',
+                },
+            },
+            actions: [],
+        },
+    },
 ];
