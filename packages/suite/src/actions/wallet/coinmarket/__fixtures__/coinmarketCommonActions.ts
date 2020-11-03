@@ -528,4 +528,64 @@ export const COMPOSE_TRANSACTION_FIXTURES = [
             actions: [],
         },
     },
+    {
+        description: 'composeTransaction, ripple account, normal',
+        initialState: {
+            suite: {
+                device: AVAILABLE_DEVICE,
+            },
+        },
+        params: {
+            data: <ComposeTransactionData>{
+                account: XRP_ACCOUNT,
+                amount: '0.1234',
+                feeInfo: {
+                    blockHeight: 50000,
+                    blockTime: 3,
+                    minFee: 1,
+                    maxFee: 40000,
+                    levels: [
+                        {
+                            label: 'normal',
+                            feePerUnit: '2',
+                            blocks: 0,
+                        },
+                    ],
+                },
+                feePerUnit: '1',
+                feeLimit: '0',
+                network: NETWORKS.find(n => n.symbol === 'xrp'),
+                minFee: '1',
+                selectedFee: 'normal',
+                isMaxActive: false,
+                isInvity: true,
+            },
+        },
+        connect: [
+            {
+                response: {
+                    success: true,
+                    payload: { levels: [{ feeLimit: '1234' }] },
+                },
+            },
+            {
+                response: {
+                    success: true,
+                    payload: [{ type: 'nonfinal', totalSpent: '10000000', feePerByte: '2' }],
+                },
+            },
+        ],
+        result: {
+            value: {
+                normal: {
+                    type: 'nonfinal',
+                    totalSpent: '123402',
+                    feePerByte: '2',
+                    bytes: 0,
+                    fee: '2',
+                },
+            },
+            actions: [],
+        },
+    },
 ];
