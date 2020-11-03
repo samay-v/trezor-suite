@@ -5,6 +5,7 @@ import { BLOCKCHAIN } from '@wallet-actions/constants';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as analyticsActions from '@suite-actions/analyticsActions';
 import { loadStorage } from '@suite-actions/storageActions';
 import { fetchLocale } from '@settings-actions/languageActions';
@@ -72,12 +73,20 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             api.dispatch(blockchainActions.init());
             if (isWeb()) TrezorConnect.renderWebUSBButton();
             break;
-        case BLOCKCHAIN.READY:
+        case BLOCKCHAIN.READY: {
             // dispatch initial location change
             api.dispatch(routerActions.init());
             // backend connected, suite is ready to use
             api.dispatch(suiteActions.onSuiteReady());
+            // Set or clear Tor backends when Suite is ready
+            const { tor } = api.getState().suite;
+            if (tor) {
+                await api.dispatch(walletSettingsActions.setTorBlockbookUrls());
+            } else {
+                api.dispatch(walletSettingsActions.clearTorBlockbookUrl());
+            }
             break;
+        }
 
         case DEVICE.CONNECT:
         case DEVICE.CONNECT_UNACQUIRED:
@@ -95,6 +104,19 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
         case SUITE.REQUEST_AUTH_CONFIRM:
             api.dispatch(suiteActions.authConfirm());
             break;
+        case SUITE.TOR_STATUS: {
+            const { loaded } = api.getState().suite;
+            if (!loaded) {
+                break;
+            }
+
+            if (action.payload) {
+                await api.dispatch(walletSettingsActions.setTorBlockbookUrls());
+            } else {
+                api.dispatch(walletSettingsActions.clearTorBlockbookUrl());
+            }
+            break;
+        }
         default:
             break;
     }

@@ -30,6 +30,14 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         api.dispatch(transactionActions.add(account.history.transactions || [], account, 1));
     }
 
+    if (action.type === WALLET_SETTINGS.CLEAR_TOR_BLOCKBOOK_URLS) {
+        const torCoins = api
+            .getState()
+            .wallet.settings.blockbookUrls.filter(b => b.tor)
+            .map(b => b.coin);
+        api.dispatch(blockchainActions.clearCustomBackend(torCoins));
+    }
+
     // propagate action to reducers
     next(action);
 
@@ -47,6 +55,10 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         action.type === WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL
     ) {
         api.dispatch(blockchainActions.setCustomBackend(action.payload.coin));
+    }
+
+    if (action.type === WALLET_SETTINGS.SET_BLOCKBOOK_URLS) {
+        api.dispatch(blockchainActions.setCustomBackend());
     }
 
     const prevRouter = prevState.router;

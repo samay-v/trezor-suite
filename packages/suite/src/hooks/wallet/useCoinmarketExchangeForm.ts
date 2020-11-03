@@ -84,7 +84,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
             sendStringAmount,
         };
 
-        await saveQuoteRequest(request);
+        saveQuoteRequest(request);
         const allQuotes = await invityAPI.getExchangeQuotes(request);
         const limits = getAmountLimits(allQuotes);
 
@@ -92,7 +92,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
             setAmountLimits(limits);
         } else {
             const [fixedQuotes, floatQuotes] = splitToFixedFloatQuotes(allQuotes, exchangeInfo);
-            await saveQuotes(fixedQuotes, floatQuotes);
+            saveQuotes(fixedQuotes, floatQuotes);
             goto('wallet-coinmarket-exchange-offers', {
                 symbol: account.symbol,
                 accountIndex: account.index,

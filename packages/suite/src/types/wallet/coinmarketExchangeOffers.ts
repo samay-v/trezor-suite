@@ -1,7 +1,10 @@
 import { AppState } from '@suite-types';
 import { Account } from '@wallet-types';
 import { ExchangeTrade } from 'invity-api';
-import { ExchangeInfo } from '@suite/actions/wallet/coinmarketExchangeActions';
+import {
+    CoinmarketExchangeAction,
+    ExchangeInfo,
+} from '@suite/actions/wallet/coinmarketExchangeActions';
 
 export interface ComponentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -38,7 +41,11 @@ export type ContextValues = {
     receiveSymbol?: string;
     receiveAccount?: Account;
     setReceiveAccount: (account?: Account) => void;
-    saveTrade: (exchangeTrade: ExchangeTrade, account: Account, date: string) => Promise<void>;
+    saveTrade: (
+        exchangeTrade: ExchangeTrade,
+        account: Account,
+        date: string,
+    ) => CoinmarketExchangeAction;
     confirmTrade: (address: string, extraField?: string) => void;
     sendTransaction: () => void;
 };

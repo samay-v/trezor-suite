@@ -1,5 +1,6 @@
 import React from 'react';
 import App from 'next/app';
+import dynamic from 'next/dynamic';
 import { Store } from 'redux';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
@@ -17,6 +18,8 @@ import { SENTRY_CONFIG } from '@suite-config';
 import Resize from '@suite-support/Resize';
 import { isDev } from '@suite-utils/build';
 import DesktopTitlebarWrapper from '@desktop/support/DesktopTitlebar';
+
+const Tor = dynamic(() => import('@suite-support/Tor'), { ssr: false });
 
 interface Props {
     store: Store;
@@ -37,10 +40,11 @@ class TrezorSuiteApp extends App<Props> {
         const { Component, pageProps, store } = this.props;
 
         return (
-            <DesktopTitlebarWrapper>
-                <ReduxProvider store={store}>
+            <ReduxProvider store={store}>
+                <DesktopTitlebarWrapper>
                     <ErrorBoundary>
                         <Resize />
+                        <Tor />
                         <OnlineStatus />
                         <IntlProvider>
                             <DesktopUpdater />
@@ -52,8 +56,8 @@ class TrezorSuiteApp extends App<Props> {
                             </Preloader>
                         </IntlProvider>
                     </ErrorBoundary>
-                </ReduxProvider>
-            </DesktopTitlebarWrapper>
+                </DesktopTitlebarWrapper>
+            </ReduxProvider>
         );
     }
 }

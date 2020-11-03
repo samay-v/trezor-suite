@@ -24,7 +24,7 @@ import { BuyTradeFormResponse } from 'invity-api';
 import { submitRequestForm as utilsSubmitRequestForm } from '@wallet-utils/coinmarket/buyUtils';
 import { isDesktop } from '@suite/utils/suite/env';
 
-export type CoinmarketCommonActions =
+export type CoinmarketCommonAction =
     | { type: typeof COINMARKET_COMMON.SAVE_TRANSACTION_REVIEW; reviewData: ReviewTransactionData }
     | {
           type: typeof COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION;
@@ -120,7 +120,7 @@ export const verifyAddress = (account: Account, inExchange = false) => async (
     }
 };
 
-export const submitRequestForm = (tradeForm: BuyTradeFormResponse) => async (
+export const submitRequestForm = (tradeForm: BuyTradeFormResponse) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {

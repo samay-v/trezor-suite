@@ -8,7 +8,7 @@ import { LANGUAGES } from '@suite-config';
 import { Action, Dispatch, GetState, TrezorDevice, AppState } from '@suite-types';
 import { DebugModeOptions } from '@suite-reducers/suiteReducer';
 
-export type SuiteActions =
+export type SuiteAction =
     | { type: typeof SUITE.INIT }
     | { type: typeof SUITE.READY }
     | { type: typeof SUITE.ERROR; error: string }
@@ -40,6 +40,7 @@ export type SuiteActions =
       }
     | { type: typeof SUITE.SET_DEBUG_MODE; payload: Partial<DebugModeOptions> }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
+    | { type: typeof SUITE.TOR_STATUS; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
@@ -63,13 +64,13 @@ export type SuiteActions =
 export const setProcessMode = (
     device: TrezorDevice,
     processMode: TrezorDevice['processMode'],
-): Action => ({
+): SuiteAction => ({
     type: SUITE.SET_PROCESS_MODE,
     device,
     payload: processMode,
 });
 
-export const setFlag = (key: keyof AppState['suite']['flags'], value: boolean): Action => ({
+export const setFlag = (key: keyof AppState['suite']['flags'], value: boolean): SuiteAction => ({
     type: SUITE.SET_FLAG,
     key,
     value,
@@ -85,19 +86,30 @@ export const initialRunCompleted = () => (dispatch: Dispatch, getState: GetState
  * Triggered by `@suite-support/OnlineStatus` or `@suite-native/support/OnlineStatus`
  * Set `online` status in suite reducer
  * @param {boolean} payload
+ * @returns {SuiteAction}
+ */
+export const updateOnlineStatus = (payload: boolean): SuiteAction => ({
+    type: SUITE.ONLINE_STATUS,
+    payload,
+});
+
+/**
+ * Triggered by `@suite-support/TorStatus`
+ * Set `tor` status in suite reducer
+ * @param {boolean} payload
  * @returns {Action}
  */
-export const updateOnlineStatus = (payload: boolean) => ({
-    type: SUITE.ONLINE_STATUS,
+export const updateTorStatus = (payload: boolean) => ({
+    type: SUITE.TOR_STATUS,
     payload,
 });
 
 /**
  * Called from `suiteMiddleware`
  * Set `loaded` field in suite reducer
- * @returns {Action}
+ * @returns {SuiteAction}
  */
-export const onSuiteReady = (): Action => ({
+export const onSuiteReady = (): SuiteAction => ({
     type: SUITE.READY,
 });
 
@@ -106,9 +118,9 @@ export const onSuiteReady = (): Action => ({
  * - Debug Settings
  * Set `debug` object in suite reducer
  * @param {boolean} payload
- * @returns {Action}
+ * @returns {SuiteAction}
  */
-export const setDebugMode = (payload: Partial<DebugModeOptions>): Action => ({
+export const setDebugMode = (payload: Partial<DebugModeOptions>): SuiteAction => ({
     type: SUITE.SET_DEBUG_MODE,
     payload,
 });
@@ -117,9 +129,9 @@ export const setDebugMode = (payload: Partial<DebugModeOptions>): Action => ({
  * Called from multiple places before and after TrezorConnect call
  * Prevent from mad clicking
  * Set `lock` field in suite reducer
- * @returns {Action}
+ * @returns {SuiteAction}
  */
-export const lockUI = (payload: boolean): Action => ({
+export const lockUI = (payload: boolean): SuiteAction => ({
     type: SUITE.LOCK_UI,
     payload,
 });
@@ -128,9 +140,9 @@ export const lockUI = (payload: boolean): Action => ({
  * Prevent TrezorConnect multiple calls
  * Called before and after specific process, like onboarding
  * Set `lock` field in suite reducer
- * @returns {Action}
+ * @returns {SuiteAction}
  */
-export const lockDevice = (payload: boolean): Action => ({
+export const lockDevice = (payload: boolean): SuiteAction => ({
     type: SUITE.LOCK_DEVICE,
     payload,
 });
@@ -139,9 +151,9 @@ export const lockDevice = (payload: boolean): Action => ({
  * Prevent route change and rendering
  * Called before and after specific process, like onboarding
  * Set `lock` field in suite reducer
- * @returns {Action}
+ * @returns {SuiteAction}
  */
-export const lockRouter = (payload: boolean): Action => ({
+export const lockRouter = (payload: boolean): SuiteAction => ({
     type: SUITE.LOCK_ROUTER,
     payload,
 });
@@ -179,7 +191,7 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
     });
 };
 
-export const rememberDevice = (payload: TrezorDevice, forceRemember?: true): Action => ({
+export const rememberDevice = (payload: TrezorDevice, forceRemember?: true): SuiteAction => ({
     type: SUITE.REMEMBER_DEVICE,
     payload,
     remember: !payload.remember || !!forceRemember,
@@ -187,7 +199,7 @@ export const rememberDevice = (payload: TrezorDevice, forceRemember?: true): Act
     forceRemember: payload.remember ? undefined : forceRemember,
 });
 
-export const forgetDevice = (payload: TrezorDevice): Action => ({
+export const forgetDevice = (payload: TrezorDevice): SuiteAction => ({
     type: SUITE.FORGET_DEVICE,
     payload,
 });
@@ -362,7 +374,7 @@ export const acquireDevice = (requestedDevice?: TrezorDevice) => async (
 /**
  * Inner action used in `authorizeDevice`
  */
-const updatePassphraseMode = (device: TrezorDevice, hidden: boolean): Action => ({
+const updatePassphraseMode = (device: TrezorDevice, hidden: boolean): SuiteAction => ({
     type: SUITE.UPDATE_PASSPHRASE_MODE,
     payload: device,
     hidden,
@@ -432,7 +444,7 @@ export const authorizeDevice = () => async (
 /**
  * Inner action used in `authConfirm`
  */
-const receiveAuthConfirm = (device: TrezorDevice, success: boolean): Action => ({
+const receiveAuthConfirm = (device: TrezorDevice, success: boolean): SuiteAction => ({
     type: SUITE.RECEIVE_AUTH_CONFIRM,
     payload: device,
     success,

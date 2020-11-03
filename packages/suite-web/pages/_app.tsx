@@ -1,6 +1,7 @@
 import React from 'react';
 import App from 'next/app';
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
@@ -19,6 +20,8 @@ import { SENTRY_CONFIG } from '@suite-config';
 import { Store } from '@suite-types';
 import ImagesPreloader from '../support/ImagesPreloader';
 import { CypressExportStore } from '../support/CypressExportStore';
+
+const Tor = dynamic(() => import('@suite-support/Tor'), { ssr: false });
 
 declare global {
     interface Window {
@@ -59,6 +62,7 @@ class TrezorSuiteApp extends App<Props> {
                 <ReduxProvider store={store}>
                     <ErrorBoundary>
                         <Resize />
+                        <Tor />
                         <OnlineStatus />
                         <IntlProvider>
                             <>

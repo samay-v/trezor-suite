@@ -1,17 +1,17 @@
-import { ReceiveActions } from '@wallet-actions/receiveActions';
-import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
-import { CoinmarketBuyActions } from '@wallet-actions/coinmarketBuyActions';
-import { CoinmarketExchangeActions } from '@wallet-actions/coinmarketExchangeActions';
-import { CoinmarketCommonActions } from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import { DiscoveryActions } from '@wallet-actions/discoveryActions';
-import { AccountActions } from '@wallet-actions/accountActions';
-import { FiatRatesActions } from '@wallet-actions/fiatRatesActions';
-import { GraphActions } from '@wallet-actions/graphActions';
-import { BlockchainActions } from '@wallet-actions/blockchainActions';
-import { SendFormActions } from '@wallet-actions/sendFormActions';
-import { AccountSearchActions } from '@wallet-actions/accountSearchActions';
+import { ReceiveAction } from '@wallet-actions/receiveActions';
+import { SignVerifyAction } from '@wallet-actions/signVerifyActions';
+import { CoinmarketBuyAction } from '@wallet-actions/coinmarketBuyActions';
+import { CoinmarketExchangeAction } from '@wallet-actions/coinmarketExchangeActions';
+import { CoinmarketCommonAction } from '@wallet-actions/coinmarket/coinmarketCommonActions';
+import { DiscoveryAction } from '@wallet-actions/discoveryActions';
+import { AccountAction } from '@wallet-actions/accountActions';
+import { FiatRatesAction } from '@wallet-actions/fiatRatesActions';
+import { GraphAction } from '@wallet-actions/graphActions';
+import { BlockchainAction } from '@wallet-actions/blockchainActions';
+import { SendFormAction } from '@wallet-actions/sendFormActions';
+import { AccountSearchAction } from '@wallet-actions/accountSearchActions';
 import { TransactionAction } from '@wallet-actions/transactionActions';
-import { SelectedAccountActions } from '@wallet-actions/selectedAccountActions';
+import { SelectedAccountAction } from '@wallet-actions/selectedAccountActions';
 import { NETWORKS } from '@wallet-config';
 import { ArrayElement } from '../utils';
 
@@ -41,17 +41,17 @@ export type { WalletAccountTransaction } from '@wallet-reducers/transactionReduc
 export type { ReceiveInfo } from '@wallet-reducers/receiveReducer';
 
 export type WalletAction =
-    | BlockchainActions
-    | ReceiveActions
-    | SignVerifyActions
+    | BlockchainAction
+    | ReceiveAction
+    | SignVerifyAction
     | TransactionAction
-    | FiatRatesActions
-    | GraphActions
-    | DiscoveryActions
-    | AccountActions
-    | SelectedAccountActions
-    | CoinmarketExchangeActions
-    | CoinmarketBuyActions
-    | CoinmarketCommonActions
-    | SendFormActions
-    | AccountSearchActions;
+    | FiatRatesAction
+    | GraphAction
+    | DiscoveryAction
+    | AccountAction
+    | SelectedAccountAction
+    | CoinmarketExchangeAction
+    | CoinmarketBuyAction
+    | CoinmarketCommonAction
+    | SendFormAction
+    | AccountSearchAction;

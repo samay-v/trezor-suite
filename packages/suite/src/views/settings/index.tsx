@@ -1,10 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { SettingsLayout } from '@settings-components';
 import { Translation } from '@suite-components';
 import {
     ActionButton,
     ActionColumn,
+    ActionInput,
     ActionSelect,
     Analytics,
     Section,
@@ -12,7 +13,7 @@ import {
     TextColumn,
 } from '@suite-components/Settings';
 import { FIAT, LANGUAGES } from '@suite-config';
-import { useAnalytics, useDevice } from '@suite-hooks';
+import { useAnalytics, useDevice, useSelector } from '@suite-hooks';
 import { Button, Tooltip, Switch } from '@trezor/components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 
@@ -60,6 +61,17 @@ const Settings = ({
 
     const { isLocked, device } = useDevice();
     const isDeviceLocked = isLocked();
+
+    // Tor
+    const tor = useSelector(state => state.suite.tor);
+    const [torAddress, setTorAddress] = useState('');
+    useEffect(() => {
+        window.desktopApi?.getTorAddress().then(address => setTorAddress(address));
+    }, [setTorAddress]);
+    const saveTorAddress = useCallback(() => {
+        // TODO: Validation
+        window.desktopApi!.setTorAddress(torAddress);
+    }, [torAddress]);
 
     // Auto Updater
     const checkForUpdates = useCallback(() => window.desktopApi?.checkForUpdates(), []);
@@ -198,6 +210,60 @@ const Settings = ({
                     </SectionItem>
                 )}
             </Section>
+
+            {isDesktop() && (
+                <Section title={<Translation id="TR_TOR" />}>
+                    <SectionItem>
+                        <TextColumn
+                            title={<Translation id="TR_TOR_TITLE" />}
+                            description={
+                                <Translation
+                                    id="TR_TOR_DESCRIPTION"
+                                    values={{
+                                        lineBreak: <br />,
+                                    }}
+                                />
+                            }
+                            learnMore="https://www.torproject.org/"
+                        />
+                        <ActionColumn>
+                            <Switch
+                                data-test="@settings/general/tor-switch"
+                                checked={tor}
+                                onChange={() => {
+                                    analytics.report({
+                                        type: 'menu/toggle-tor',
+                                        payload: {
+                                            value: !tor,
+                                        },
+                                    });
+                                    window.desktopApi!.toggleTor(!tor);
+                                }}
+                            />
+                        </ActionColumn>
+                    </SectionItem>
+                    <SectionItem>
+                        <TextColumn
+                            title={<Translation id="TR_TOR_PARAM_TITLE" />}
+                            description={<Translation id="TR_TOR_PARAM_DESCRIPTION" />}
+                        />
+                        <ActionColumn>
+                            <ActionInput
+                                noTopLabel
+                                noError
+                                value={torAddress}
+                                state={/* (TODO: Error check) ? 'error' : */ undefined}
+                                onChange={(event: React.FormEvent<HTMLInputElement>) =>
+                                    setTorAddress(event.currentTarget.value)
+                                }
+                                onBlur={saveTorAddress}
+                                data-test="@settings/general/tor-address"
+                                placeholder="127.0.0.1:9050"
+                            />
+                        </ActionColumn>
+                    </SectionItem>
+                </Section>
+            )}
 
             <Section title={<Translation id="TR_APPLICATION" />}>
                 <Analytics />

@@ -132,6 +132,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Activate all',
         id: 'TR_ACTIVATE_ALL',
     },
+    TR_ACTIVE: {
+        id: 'TR_ACTIVE',
+        defaultMessage: 'active',
+    },
     TR_ADD_ACCOUNT: {
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
@@ -2635,6 +2639,10 @@ const definedMessages = defineMessages({
         id: 'TR_SEND_FEE_TOOLTIP',
         defaultMessage: 'TR_SEND_FEE_TOOLTIP',
     },
+    TR_PARAMETERS: {
+        id: 'TR_PARAMETERS',
+        defaultMessage: 'Parameters',
+    },
     TR_PIN_MISMATCH_HEADING: {
         id: 'TR_PIN_MISMATCH_HEADING',
         defaultMessage: 'Pin mismatch',
@@ -2847,6 +2855,28 @@ const definedMessages = defineMessages({
     TR_LIVE: {
         id: 'TR_LIVE',
         defaultMessage: 'Live',
+    },
+    TR_TOR_TITLE: {
+        id: 'TR_TOR_TITLE',
+        defaultMessage: 'Tor',
+    },
+    TR_TOR_DESCRIPTION: {
+        id: 'TR_TOR_DESCRIPTION',
+        defaultMessage:
+            "Enabling this will route all of Suite's traffic through the Tor network.{lineBreak}All requests to Trezor infrastructure will be pointed to our Tor services, increasing your privacy and security.",
+    },
+    TR_TOR_PARAM_TITLE: {
+        id: 'TR_TOR_PARAM_TITLE',
+        defaultMessage: 'Tor address and port',
+    },
+    TR_TOR_PARAM_DESCRIPTION: {
+        id: 'TR_TOR_PARAM_DESCRIPTION',
+        defaultMessage:
+            'You can configure the address to point to a different Tor instance. Default: 127.0.0.1:9050.',
+    },
+    TR_TOR_BRIDGE: {
+        id: 'TR_TOR_BRIDGE',
+        defaultMessage: 'Bridge not working in Tor Browser?',
     },
     TR_TRANSACTIONS: {
         id: 'TR_TRANSACTIONS',
@@ -3547,6 +3577,10 @@ const definedMessages = defineMessages({
     TR_DISCREET: {
         id: 'TR_DISCREET',
         defaultMessage: 'Discreet',
+    },
+    TR_TOR: {
+        id: 'TR_TOR',
+        defaultMessage: 'Tor',
     },
     TR_STANDARD_WALLET: {
         id: 'TR_STANDARD_WALLET',
@@ -4666,6 +4700,10 @@ const definedMessages = defineMessages({
         id: 'TR_TAKES_N_MINUTES',
         defaultMessage: 'Takes ~{n} mins',
     },
+    TR_INACTIVE: {
+        id: 'TR_INACTIVE',
+        defaultMessage: 'inactive',
+    },
     TR_INPUTS_OUTPUTS: {
         id: 'TR_INPUTS_OUTPUTS',
         defaultMessage: 'Inputs, Outputs',
@@ -4726,6 +4764,10 @@ const definedMessages = defineMessages({
     TR_UPDATE_MODAL_INSTALL_LATER: {
         id: 'TR_UPDATE_MODAL_INSTALL_LATER',
         defaultMessage: 'Update on next launch',
+    },
+    TR_MANAGE: {
+        id: 'TR_MANAGE',
+        defaultMessage: 'manage',
     },
     TR_MINIMIZE: {
         id: 'TR_MINIMIZE',
@@ -4906,6 +4948,10 @@ const definedMessages = defineMessages({
     TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_PARAGRAPH: {
         id: 'TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_PARAGRAPH',
         defaultMessage: 'Companion to the <a>Trezor hardware wallet</a>',
+    },
+    TR_SUITE_WEB_LANDING_FOOTER_ROADMAP: {
+        id: 'TR_SUITE_WEB_LANDING_FOOTER_ROADMAP',
+        defaultMessage: 'Roadmap',
     },
     TR_SUITE_WEB_LANDING_DOWNLOAD_DESKTOP: {
         id: 'TR_SUITE_WEB_LANDING_DOWNLOAD_DESKTOP',

@@ -20,7 +20,7 @@ import { BLOCKCHAIN } from './constants';
 // checks if there are discovery processes loaded from LocalStorage
 // if so starts subscription to proper networks
 
-export type BlockchainActions =
+export type BlockchainAction =
     | {
           type: typeof BLOCKCHAIN.READY | typeof BLOCKCHAIN.CONNECTED;
       }
@@ -158,6 +158,20 @@ export const setCustomBackend = (symbol?: string) => async (_: Dispatch, getStat
             blockchainLink: {
                 type: 'blockbook',
                 url: blockbookUrls.filter(b => b.coin === coin).map(b => b.url),
+            },
+        });
+    });
+    return Promise.all(promises);
+};
+
+export const clearCustomBackend = (symbol: string | string[]) => async () => {
+    const coins = typeof symbol === 'string' ? [symbol] : [...new Set(symbol)];
+    const promises = coins.map(coin => {
+        return TrezorConnect.blockchainSetCustomBackend({
+            coin,
+            blockchainLink: {
+                type: 'blockbook',
+                url: [],
             },
         });
     });

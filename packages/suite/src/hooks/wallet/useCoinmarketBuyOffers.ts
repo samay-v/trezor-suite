@@ -102,7 +102,7 @@ export const useOffers = (props: Props) => {
                     });
                     if (response) {
                         if (response.trade.status === 'LOGIN_REQUEST' && response.tradeForm) {
-                            await submitRequestForm(response.tradeForm);
+                            submitRequestForm(response.tradeForm);
                         } else {
                             const errorMessage = `[doBuyTrade] ${response.trade.status} ${response.trade.error}`;
                             console.log(errorMessage);
@@ -142,12 +142,12 @@ export const useOffers = (props: Props) => {
                 error: response.trade.error,
             });
         } else {
-            await saveTrade(response.trade, account, new Date().toISOString());
+            saveTrade(response.trade, account, new Date().toISOString());
             if (response.tradeForm) {
-                await submitRequestForm(response.tradeForm);
+                submitRequestForm(response.tradeForm);
             }
             if (isDesktop()) {
-                await saveTransactionDetailId(response.trade.paymentId);
+                saveTransactionDetailId(response.trade.paymentId);
                 goto('wallet-coinmarket-buy-detail', selectedAccount.params);
             }
         }

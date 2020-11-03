@@ -18,7 +18,7 @@ export interface ExchangeInfo {
     sellSymbols: Set<string>;
 }
 
-export type CoinmarketExchangeActions =
+export type CoinmarketExchangeAction =
     | { type: typeof COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO; exchangeInfo: ExchangeInfo }
     | { type: typeof COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST; request: ExchangeTradeQuoteRequest }
     | { type: typeof COINMARKET_EXCHANGE.SAVE_TRANSACTION_ID; transactionId: string }
@@ -122,46 +122,39 @@ export const openCoinmarketExchangeConfirmModal = (provider?: string) => (dispat
     );
 };
 
-export const saveTrade = (exchangeTrade: ExchangeTrade, account: Account, date: string) => async (
-    dispatch: Dispatch,
-) => {
-    dispatch({
-        type: COINMARKET_EXCHANGE.SAVE_TRADE,
-        tradeType: 'exchange',
-        key: exchangeTrade.orderId,
-        date,
-        data: exchangeTrade,
-        account: {
-            descriptor: account.descriptor,
-            symbol: account.symbol,
-            accountType: account.accountType,
-            accountIndex: account.index,
-        },
-    });
-};
+export const saveTrade = (
+    exchangeTrade: ExchangeTrade,
+    account: Account,
+    date: string,
+): CoinmarketExchangeAction => ({
+    type: COINMARKET_EXCHANGE.SAVE_TRADE,
+    tradeType: 'exchange',
+    key: exchangeTrade.orderId,
+    date,
+    data: exchangeTrade,
+    account: {
+        descriptor: account.descriptor,
+        symbol: account.symbol,
+        accountType: account.accountType,
+        accountIndex: account.index,
+    },
+});
 
-export const saveQuoteRequest = (request: ExchangeTradeQuoteRequest) => async (
-    dispatch: Dispatch,
-) => {
-    dispatch({
-        type: COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST,
-        request,
-    });
-};
+export const saveQuoteRequest = (request: ExchangeTradeQuoteRequest): CoinmarketExchangeAction => ({
+    type: COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST,
+    request,
+});
 
-export const saveTransactionId = (transactionId: string) => async (dispatch: Dispatch) => {
-    dispatch({
-        type: COINMARKET_EXCHANGE.SAVE_TRANSACTION_ID,
-        transactionId,
-    });
-};
+export const saveTransactionId = (transactionId: string): CoinmarketExchangeAction => ({
+    type: COINMARKET_EXCHANGE.SAVE_TRANSACTION_ID,
+    transactionId,
+});
 
-export const saveQuotes = (fixedQuotes: ExchangeTrade[], floatQuotes: ExchangeTrade[]) => async (
-    dispatch: Dispatch,
-) => {
-    dispatch({
-        type: COINMARKET_EXCHANGE.SAVE_QUOTES,
-        fixedQuotes,
-        floatQuotes,
-    });
-};
+export const saveQuotes = (
+    fixedQuotes: ExchangeTrade[],
+    floatQuotes: ExchangeTrade[],
+): CoinmarketExchangeAction => ({
+    type: COINMARKET_EXCHANGE.SAVE_QUOTES,
+    fixedQuotes,
+    floatQuotes,
+});

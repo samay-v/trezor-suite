@@ -3,7 +3,7 @@ import { UseFormMethods } from 'react-hook-form';
 import { Account, Network, CoinFiatRates } from '@wallet-types';
 import { FeeLevel } from 'trezor-connect';
 import { ExchangeTrade, ExchangeTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
-import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
+import { CoinmarketExchangeAction, ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
 import { TypedValidationRules } from './form';
 import { FeeInfo, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 
@@ -65,9 +65,16 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<FormState>, 'registe
     selectFee: (feeLevel: FeeLevel['label']) => void;
     updateFiatCurrency: (selectedCurrency: { value: string; label: string }) => void;
     updateBuyCryptoValue: (fiatValue: string, decimals: number) => void;
-    saveQuoteRequest: (request: ExchangeTradeQuoteRequest) => Promise<void>;
-    saveQuotes: (fixedQuotes: ExchangeTrade[], floatQuotes: ExchangeTrade[]) => Promise<void>;
-    saveTrade: (exchangeTrade: ExchangeTrade, account: Account, date: string) => Promise<void>;
+    saveQuoteRequest: (request: ExchangeTradeQuoteRequest) => CoinmarketExchangeAction;
+    saveQuotes: (
+        fixedQuotes: ExchangeTrade[],
+        floatQuotes: ExchangeTrade[],
+    ) => CoinmarketExchangeAction;
+    saveTrade: (
+        exchangeTrade: ExchangeTrade,
+        account: Account,
+        date: string,
+    ) => CoinmarketExchangeAction;
     amountLimits?: AmountLimits;
     transactionInfo: PrecomposedTransactionFinal | null;
     setTransactionInfo: (transactionInfo: PrecomposedTransactionFinal) => void;
