@@ -1,14 +1,12 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import invityAPI from '@suite-services/invityAPI';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import { ExchangeCoinInfo, ExchangeTrade } from 'invity-api';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { Account } from '@wallet-types';
 import { Props, ContextValues, ExchangeStep } from '@wallet-types/coinmarketExchangeOffers';
-import { useSelector } from 'react-redux';
-import { AppState } from '@suite/types/suite';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { splitToFixedFloatQuotes } from '@wallet-utils/coinmarket/exchangeUtils';
 import networks from '@wallet-config/networks';
@@ -67,27 +65,16 @@ export const useOffers = (props: Props) => {
         addNotification: notificationActions.addToast,
     });
 
-    const invityAPIUrl = useSelector<
-        AppState,
-        AppState['suite']['settings']['debug']['invityAPIUrl']
-    >(state => state.suite.settings.debug.invityAPIUrl);
+    const invityAPIUrl = useSelector(state => state.suite.settings.debug.invityAPIUrl);
     if (invityAPIUrl) {
         invityAPI.setInvityAPIServer(invityAPIUrl);
     }
 
-    const accounts = useSelector<AppState, AppState['wallet']['accounts']>(
-        state => state.wallet.accounts,
+    const accounts = useSelector(state => state.wallet.accounts);
+    const transactionInfo = useSelector(state => state.wallet.coinmarket.transaction.composed);
+    const exchangeCoinInfo = useSelector(
+        state => state.wallet.coinmarket.exchange.exchangeCoinInfo,
     );
-
-    const transactionInfo = useSelector<
-        AppState,
-        AppState['wallet']['coinmarket']['transaction']['composed']
-    >(state => state.wallet.coinmarket.transaction.composed);
-
-    const exchangeCoinInfo = useSelector<
-        AppState,
-        AppState['wallet']['coinmarket']['exchange']['exchangeCoinInfo']
-    >(state => state.wallet.coinmarket.exchange.exchangeCoinInfo);
 
     useEffect(() => {
         if (!quotesRequest) {
@@ -143,10 +130,11 @@ export const useOffers = (props: Props) => {
                 n => n.symbol === receiveSymbol && !unavailableCapabilities[n.symbol],
             );
             if (buyNetworks.length > 0) {
-                // are there some accounts with the symbol
+                // get accounts of the current symbol belonging to the current device
                 setSuiteBuyAccounts(
                     accounts.filter(
                         a =>
+                            a.deviceState === device?.state &&
                             a.symbol === receiveSymbol &&
                             (!a.empty ||
                                 a.visible ||
