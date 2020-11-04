@@ -247,13 +247,14 @@ export const signTransaction = (data: SignTransactionData) => async (
         return;
     }
 
-    // transform to TrezorConnect.ethereumSignTransaction params
+    const decimals = data.transactionInfo.token
+        ? data.transactionInfo.token.decimals
+        : network.decimals;
     const transaction = prepareEthereumTransaction({
         token: data.transactionInfo.token,
         chainId: data.network.chainId,
         to: data.address,
-        amount: data.transactionInfo.max || '0',
-        // data: formValues.ethereumDataHex,
+        amount: formatAmount(data.transactionInfo.transaction.outputs[0].amount, decimals),
         gasLimit: data.transactionInfo.feeLimit || ETH_DEFAULT_GAS_LIMIT,
         gasPrice: data.transactionInfo.feePerByte,
         nonce,

@@ -179,7 +179,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
 
         const formattedToken = invityApiSymbolToSymbol(token);
         const tokenInfo = account.tokens?.find(t => t.symbol === formattedToken);
-        const tokenDecimals = tokenInfo ? tokenInfo.decimals : network.decimals;
+        const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
 
         const transactionInfo = result ? result[selectedFeeLevel.label] : null;
         if (transactionInfo?.type === 'final') {
@@ -187,9 +187,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
             if (data.fillValue) {
                 let amountToFill = data.amount || '0';
                 if (data.setMax) {
-                    amountToFill = new BigNumber(transactionInfo.max || '0').toFixed(
-                        tokenInfo ? tokenDecimals : network.decimals,
-                    );
+                    amountToFill = new BigNumber(transactionInfo.max || '0').toFixed(decimals);
                 }
                 setValue('buyCryptoInput', amountToFill, { shouldValidate: true });
                 updateFiatValue(amountToFill);
