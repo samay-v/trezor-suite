@@ -131,23 +131,19 @@ export const submitRequestForm = (tradeForm: BuyTradeFormResponse) => (
     utilsSubmitRequestForm(tradeForm);
 };
 
-export const saveComposedTransaction = (composedTransaction: PrecomposedTransactionFinal) => async (
-    dispatch: Dispatch,
-) => {
-    dispatch({
-        type: COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION,
-        composedTransaction,
-    });
-};
+export const saveComposedTransaction = (
+    composedTransaction: PrecomposedTransactionFinal,
+): CoinmarketCommonAction => ({
+    type: COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION,
+    composedTransaction,
+});
 
-export const saveTransactionReview = (reviewData: ReviewTransactionData) => async (
-    dispatch: Dispatch,
-) => {
-    dispatch({
-        type: COINMARKET_COMMON.SAVE_TRANSACTION_REVIEW,
-        reviewData,
-    });
-};
+export const saveTransactionReview = (
+    reviewData: ReviewTransactionData,
+): CoinmarketCommonAction => ({
+    type: COINMARKET_COMMON.SAVE_TRANSACTION_REVIEW,
+    reviewData,
+});
 
 export const composeTransaction = (composeTransactionData: ComposeTransactionData) => async (
     dispatch: Dispatch,

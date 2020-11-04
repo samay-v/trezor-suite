@@ -2,7 +2,7 @@ import { Icon, variables } from '@trezor/components';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { invityApiSymbolToSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { useCoinmarketExchangeFormContext } from '@suite/hooks/wallet/useCoinmarketExchangeForm';
+import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import BuyCryptoInput from './BuyCryptoInput';
 import FiatInput from './FiatInput';
 import SellCryptoSelect from './SellCryptoSelect';

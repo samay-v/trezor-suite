@@ -46,7 +46,7 @@ export type CoinmarketExchangeAction =
           };
       };
 
-export async function loadExchangeInfo(): Promise<[ExchangeInfo, ExchangeCoinInfo[]]> {
+export const loadExchangeInfo = async (): Promise<[ExchangeInfo, ExchangeCoinInfo[]]> => {
     const [exchangeList, exchangeCoinInfo] = await Promise.all([
         invityAPI.getExchangeList(),
         invityAPI.getExchangeCoins(),
@@ -96,23 +96,19 @@ export async function loadExchangeInfo(): Promise<[ExchangeInfo, ExchangeCoinInf
         },
         exchangeCoinInfo,
     ];
-}
-
-export const saveExchangeInfo = (exchangeInfo: ExchangeInfo) => async (dispatch: Dispatch) => {
-    dispatch({
-        type: COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO,
-        exchangeInfo,
-    });
 };
 
-export const saveExchangeCoinInfo = (exchangeCoinInfo: ExchangeCoinInfo[]) => async (
-    dispatch: Dispatch,
-) => {
-    dispatch({
-        type: COINMARKET_EXCHANGE.SAVE_EXCHANGE_COIN_INFO,
-        exchangeCoinInfo,
-    });
-};
+export const saveExchangeInfo = (exchangeInfo: ExchangeInfo): CoinmarketExchangeAction => ({
+    type: COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO,
+    exchangeInfo,
+});
+
+export const saveExchangeCoinInfo = (
+    exchangeCoinInfo: ExchangeCoinInfo[],
+): CoinmarketExchangeAction => ({
+    type: COINMARKET_EXCHANGE.SAVE_EXCHANGE_COIN_INFO,
+    exchangeCoinInfo,
+});
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
 // used in useCoinmarketExchangeOffers

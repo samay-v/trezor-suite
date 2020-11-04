@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { variables, colors } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { useCoinmarketExchangeFormContext } from '@suite/hooks/wallet/useCoinmarketExchangeForm';
+import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 
 import Inputs from './Inputs';
 import Fees from './Fees';

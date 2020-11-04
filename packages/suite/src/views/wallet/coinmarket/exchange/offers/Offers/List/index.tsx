@@ -4,7 +4,7 @@ import { colors, variables } from '@trezor/components';
 import Quote from './Quote';
 import { ExchangeTrade } from 'invity-api';
 import { QuestionTooltip, Translation } from '@suite-components';
-import { useCoinmarketExchangeOffersContext } from '@suite/hooks/wallet/useCoinmarketExchangeOffers';
+import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;

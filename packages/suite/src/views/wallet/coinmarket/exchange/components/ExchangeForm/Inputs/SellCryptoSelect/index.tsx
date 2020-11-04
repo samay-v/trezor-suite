@@ -4,7 +4,7 @@ import React from 'react';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { ExchangeCoinInfo } from 'invity-api';
-import { useCoinmarketExchangeFormContext } from '@suite/hooks/wallet/useCoinmarketExchangeForm';
+import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import { Translation } from '@suite-components';
 import { Account } from '@wallet-types';
 import invityAPI from '@suite-services/invityAPI';

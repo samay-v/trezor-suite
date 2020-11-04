@@ -10,7 +10,7 @@ import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeAc
 import { Account } from '@wallet-types';
 import { useWatchExchangeTrade } from '@wallet-hooks/useCoinmarket';
 import Status from '../Status';
-import { Translation } from '@suite/components/suite';
+import { Translation } from '@suite-components';
 import { useActions } from '@suite/hooks/suite';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 

@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import { Translation } from '@suite-components';
 import styled from 'styled-components';
 import { invityApiSymbolToSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { useCoinmarketExchangeFormContext } from '@suite/hooks/wallet/useCoinmarketExchangeForm';
+import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import { formatLabel } from '@wallet-utils/coinmarket/exchangeUtils';
 
 const Wrapper = styled.div`

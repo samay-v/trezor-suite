@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@trezor/components';
 import { Translation } from '@suite-components';
 import styled from 'styled-components';
-import { useCoinmarketExchangeFormContext } from '@suite/hooks/wallet/useCoinmarketExchangeForm';
+import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 
 const Wrapper = styled.div`
     display: flex;

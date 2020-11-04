@@ -3,8 +3,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { InputError } from '@wallet-components';
 import { isDecimalsValid } from '@wallet-utils/validation';
-import { useCoinmarketExchangeFormContext } from '@suite/hooks/wallet/useCoinmarketExchangeForm';
-import { Translation } from '@suite/components/suite';
+import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
+import { Translation } from '@suite-components';
 import FiatSelect from './FiatSelect';
 import BigNumber from 'bignumber.js';
 

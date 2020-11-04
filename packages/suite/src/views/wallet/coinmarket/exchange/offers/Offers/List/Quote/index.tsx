@@ -5,7 +5,7 @@ import { QuestionTooltip, Translation } from '@suite-components';
 import { ExchangeTrade } from 'invity-api';
 import CoinmarketExchangeProviderInfo from '@wallet-components/CoinmarketExchangeProviderInfo';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { useCoinmarketExchangeOffersContext } from '@suite/hooks/wallet/useCoinmarketExchangeOffers';
+import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 
 const Wrapper = styled.div`
     display: flex;
