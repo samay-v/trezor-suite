@@ -22,7 +22,7 @@ import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarket
 import { Account } from '@wallet-types';
 import { BuyTradeFormResponse } from 'invity-api';
 import { submitRequestForm as utilsSubmitRequestForm } from '@wallet-utils/coinmarket/buyUtils';
-import { isDesktop } from '@suite/utils/suite/env';
+import { isDesktop } from '@suite-utils/env';
 
 export type CoinmarketCommonAction =
     | { type: typeof COINMARKET_COMMON.SAVE_TRANSACTION_REVIEW; reviewData: ReviewTransactionData }

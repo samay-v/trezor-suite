@@ -109,8 +109,8 @@ const Arrow = styled.div`
 `;
 
 const ExchangeTransaction = ({ trade, providers, account }: Props) => {
-    const { goto } = useActions({ goto: routerActions.goto });
-    const { saveTransactionId } = useActions({
+    const { goto, saveTransactionId } = useActions({
+        goto: routerActions.goto,
         saveTransactionId: coinmarketExchangeActions.saveTransactionId,
     });
     useWatchExchangeTrade(account, trade);

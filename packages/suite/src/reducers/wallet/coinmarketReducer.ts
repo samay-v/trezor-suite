@@ -11,7 +11,7 @@ import {
     ExchangeCoinInfo,
 } from 'invity-api';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
-import { ExchangeInfo } from '@suite/actions/wallet/coinmarketExchangeActions';
+import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
 import { COINMARKET_BUY, COINMARKET_EXCHANGE, COINMARKET_COMMON } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
 import { Action as SuiteAction } from '@suite-types';

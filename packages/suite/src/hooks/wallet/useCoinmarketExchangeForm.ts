@@ -1,6 +1,11 @@
 import { createContext, useContext, useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import TrezorConnect, { FeeLevel } from 'trezor-connect';
+import { ExchangeTradeQuoteRequest } from 'invity-api';
+import BigNumber from 'bignumber.js';
+import { NETWORKS } from '@wallet-config';
+import { useActions } from '@suite-hooks';
+import invityAPI from '@suite-services/invityAPI';
 import { invityApiSymbolToSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { toFiatCurrency, fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
@@ -8,10 +13,6 @@ import { PrecomposedLevels, PrecomposedTransactionFinal } from '@wallet-types/se
 import { useInvityAPI } from '@wallet-hooks/useCoinmarket';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import { useActions } from '@suite-hooks';
-import BigNumber from 'bignumber.js';
-import { NETWORKS } from '@wallet-config';
-import invityAPI from '@suite-services/invityAPI';
 import * as routerActions from '@suite-actions/routerActions';
 import {
     FormState,
@@ -24,7 +25,6 @@ import {
     getAmountLimits,
     splitToFixedFloatQuotes,
 } from '@suite/utils/wallet/coinmarket/exchangeUtils';
-import { ExchangeTradeQuoteRequest } from 'invity-api';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';

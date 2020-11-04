@@ -5,7 +5,7 @@ import { symbolToInvityApiSymbol } from './coinmarketUtils';
 import { Account } from '@wallet-types';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return error message
-export function getAmountLimits(quotes: ExchangeTrade[]): AmountLimits | undefined {
+export const getAmountLimits = (quotes: ExchangeTrade[]): AmountLimits | undefined => {
     let min: number | undefined;
     let max: number | undefined;
     // eslint-disable-next-line no-restricted-syntax
@@ -28,9 +28,9 @@ export function getAmountLimits(quotes: ExchangeTrade[]): AmountLimits | undefin
     if (min || max) {
         return { currency: quotes[0].send || '', min, max };
     }
-}
+};
 
-export function isQuoteError(quote: ExchangeTrade): boolean {
+export const isQuoteError = (quote: ExchangeTrade): boolean => {
     if (
         quote.error ||
         !quote.receive ||
@@ -47,21 +47,23 @@ export function isQuoteError(quote: ExchangeTrade): boolean {
         return true;
     }
     return false;
-}
+};
 
 // return 3 arrays: quotes not in error, quotes with min/max error, quotes with general error
-function splitQuotes(quotes: ExchangeTrade[]): [ExchangeTrade[], ExchangeTrade[], ExchangeTrade[]] {
+const splitQuotes = (
+    quotes: ExchangeTrade[],
+): [ExchangeTrade[], ExchangeTrade[], ExchangeTrade[]] => {
     return [
         quotes.filter(q => !isQuoteError(q)),
         quotes.filter(q => isQuoteError(q) && !q.error),
         quotes.filter(q => q.error),
     ];
-}
+};
 
-export function splitToFixedFloatQuotes(
+export const splitToFixedFloatQuotes = (
     quotes: ExchangeTrade[],
     exchangeInfo: ExchangeInfo | undefined,
-): [ExchangeTrade[], ExchangeTrade[]] {
+): [ExchangeTrade[], ExchangeTrade[]] => {
     const [fixedOK, fixedMinMax, fixedError] = splitQuotes(
         quotes.filter(q => exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate) || [],
     );
@@ -85,7 +87,7 @@ export function splitToFixedFloatQuotes(
             ? []
             : floatMinMax.concat(floatError);
     return [fixedQuotes, floatQuotes];
-}
+};
 
 export const getSellCryptoOptions = (account: Account, exchangeInfo?: ExchangeInfo) => {
     const uppercaseSymbol = account.symbol.toUpperCase();

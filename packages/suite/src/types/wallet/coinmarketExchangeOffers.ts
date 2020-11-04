@@ -1,10 +1,7 @@
 import { AppState } from '@suite-types';
 import { Account } from '@wallet-types';
 import { ExchangeTrade } from 'invity-api';
-import {
-    CoinmarketExchangeAction,
-    ExchangeInfo,
-} from '@suite/actions/wallet/coinmarketExchangeActions';
+import { CoinmarketExchangeAction, ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
 
 export interface ComponentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
