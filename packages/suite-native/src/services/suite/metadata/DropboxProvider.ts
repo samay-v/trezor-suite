@@ -2,6 +2,7 @@ import { AbstractMetadataProvider, Result } from '@suite-types/metadata';
 
 class DropboxProvider extends AbstractMetadataProvider {
     isCloud = true;
+    supportsTokenRenewal = true;
     constructor(_token?: string) {
         super('dropbox');
     }

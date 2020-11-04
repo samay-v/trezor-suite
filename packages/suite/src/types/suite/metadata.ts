@@ -86,6 +86,8 @@ export type Result<T> = Promise<Success<T> | Error>;
 export abstract class AbstractMetadataProvider {
     // isCloud means that this provider is not local and allows multi client sync. These providers are suitable for backing up data.
     abstract isCloud: boolean;
+    // does this provider support refreshing access-token without user interaction?
+    abstract supportsTokenRenewal: boolean;
 
     constructor(public type: MetadataProviderType) {}
     abstract connect(): Promise<boolean>;

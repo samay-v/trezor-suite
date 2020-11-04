@@ -8,6 +8,7 @@ class DropboxProvider extends AbstractMetadataProvider {
     client: Dropbox;
     user: DropboxTypes.users.FullAccount | undefined;
     isCloud = true;
+    supportsTokenRenewal = true;
 
     constructor(token?: string) {
         super('dropbox');

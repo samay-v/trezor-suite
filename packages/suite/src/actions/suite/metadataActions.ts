@@ -339,8 +339,7 @@ export const fetchMetadata = (deviceState: string) => async (
     try {
         await Promise.all(promises);
         // if interval for watching provider is not set, create it
-
-        if (!fetchIntervals[deviceState]) {
+        if (provider.supportsTokenRenewal && !fetchIntervals[deviceState]) {
             fetchIntervals[deviceState] = setInterval(() => {
                 if (!getState().suite.online) {
                     return;

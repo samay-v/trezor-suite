@@ -4,6 +4,7 @@ import Google from '../../google';
 class GoogleProvider extends AbstractMetadataProvider {
     client: Google;
     isCloud = true;
+    supportsTokenRenewal = true;
 
     constructor(_token?: string) {
         super('google');

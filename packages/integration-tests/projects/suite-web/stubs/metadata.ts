@@ -41,3 +41,12 @@ export const stubOpen = (win: Window) => {
     // @ts-ignore
     return () => win.postMessage('?code=chicken-cho-cha&state=YYYYYYYYYY');
 };
+
+export const rerouteMetadataToMockProvider = (type: 'google' | 'dropbox') => {
+    switch (type) {
+        case 'dropbox':
+            return rerouteDropbox;
+        case 'google':
+            return rerouteGoogle;
+    }
+};

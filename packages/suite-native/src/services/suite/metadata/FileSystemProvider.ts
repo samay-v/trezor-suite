@@ -2,6 +2,7 @@ import { AbstractMetadataProvider, Result } from '@suite-types/metadata';
 
 class FileSystemProvider extends AbstractMetadataProvider {
     isCloud = true;
+    supportsTokenRenewal = false;
 
     constructor(_token?: string) {
         super('fileSystem');

@@ -7,16 +7,13 @@ describe('Dropbox api errors', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
     });
-    after(() => {
-        cy.task('stopDropbox');
-    });
 
     it('Malformed token', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
-        cy.task('startDropbox');
+        cy.task('metadataStartProvider', 'dropbox');
         // prepare some initial files
-        cy.task('setFileContent', {
+        cy.task('metadataSetFileContent', {
             provider: 'dropbox',
             file:
                 '/apps/trezor/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
@@ -57,7 +54,7 @@ describe('Dropbox api errors', () => {
 
         cy.log('at this moment, we send wrong token in request');
 
-        cy.task('setNextResponse', {
+        cy.task('metadataSetNextResponse', {
             provider: 'dropbox',
             status: 400,
             body:

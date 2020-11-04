@@ -1,14 +1,16 @@
 import { AbstractMetadataProvider } from '@suite-types/metadata';
 import GoogleClient from '@suite/services/google';
+import { isDesktop } from '@suite-utils/env';
 
 class GoogleProvider extends AbstractMetadataProvider {
     connected = false;
     client: GoogleClient;
     isCloud = true;
-
+    supportsTokenRenewal: boolean;
     constructor(token?: string) {
         super('google');
         this.client = new GoogleClient(token);
+        this.supportsTokenRenewal = isDesktop();
     }
 
     async connect() {
@@ -17,7 +19,6 @@ class GoogleProvider extends AbstractMetadataProvider {
             this.connected = true;
             return true;
         } catch (error) {
-            console.log('error', error);
             return false;
         }
     }
